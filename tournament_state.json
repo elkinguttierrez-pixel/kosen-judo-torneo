@@ -1,0 +1,71 @@
+{
+  "version": 783,
+  "updatedAt": "2026-08-28T19:03:01.016Z",
+  "judokas": [],
+  "dojos": [
+    {
+      "id": "dojo_1787935817948_974",
+      "name": "Heikegani",
+      "sensei": "Rudy",
+      "phone": "22555896",
+      "city": "Sabaneta",
+      "clave": "DOJO-4059",
+      "createdAt": "2026-08-28T16:50:17.948Z",
+      "judokasCount": 1
+    },
+    {
+      "id": "dojo_1787941956163_741",
+      "name": "Dojo Test Sync 458",
+      "sensei": "Sensei Test",
+      "phone": "3001234567",
+      "city": "Medellin",
+      "clave": "TEST-1332",
+      "createdAt": "2026-08-28T18:32:36.163Z",
+      "judokasCount": 0
+    }
+  ],
+  "matchHistory": [],
+  "dojoLeaderboard": {},
+  "categoryPlacements": {},
+  "liveMatch": {
+    "matchIndex": 0,
+    "matchNumber": 1,
+    "fightId": null,
+    "categoryKey": null,
+    "round": 1,
+    "white": {
+      "id": null,
+      "name": "Judoka Blanco",
+      "dojo": "Dojo Shiro",
+      "ippon": 0,
+      "wazaari": 0,
+      "yuko": 0,
+      "koka": 0,
+      "shido": 0,
+      "hansoku": false
+    },
+    "blue": {
+      "id": null,
+      "name": "Judoka Azul",
+      "dojo": "Dojo Ao",
+      "ippon": 0,
+      "wazaari": 1,
+      "yuko": 0,
+      "koka": 0,
+      "shido": 0,
+      "hansoku": false
+    },
+    "timer": {
+      "remainingSeconds": 120,
+      "totalSeconds": 120,
+      "isRunning": false,
+      "isGoldenScore": false
+    },
+    "osaekomi": {
+      "side": null,
+      "seconds": 0,
+      "isRunning": false
+    },
+    "updatedAt": "2026-08-28T19:03:01.015Z"
+  }
+}

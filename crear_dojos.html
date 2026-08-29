@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear Dojos & Generar Claves | Torneo KOSEN JUDO HEIKEGANI</title>
+  <link rel="icon" type="image/jpeg" href="heikegani.jpg">
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --panel-dark: #131d2e;
+      --panel-border: #1e293b;
+      --panel-hover: #1e2e47;
+      
+      --gold: #f59e0b;
+      --gold-light: #fbbf24;
+      --red: #ef4444;
+      --green: #10b981;
+      --green-hover: #059669;
+      --sky: #38bdf8;
+      --blue: #2563eb;
+      --blue-hover: #1d4ed8;
+      --slate-300: #cbd5e1;
+      --slate-400: #94a3b8;
+      --slate-600: #475569;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 50px;
+    }
+
+    header {
+      background: linear-gradient(180deg, #162032 0%, #0f172a 100%);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #24344d;
+      flex-wrap: wrap;
+      gap: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+    }
+
+    .brand-logo-img {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      object-fit: contain;
+      border: 2px solid var(--gold);
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.5);
+      background: #080c14;
+      padding: 2px;
+    }
+
+    .brand-title {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      color: #fff;
+    }
+
+    .brand-title span {
+      color: var(--gold);
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: var(--slate-400);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .header-nav-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-header {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--slate-600);
+      background: #1e293b;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .btn-header:hover {
+      background: #334155;
+      transform: translateY(-1px);
+    }
+
+    .btn-header-gold {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #000;
+      border: none;
+      font-weight: 900;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+    }
+    .btn-header-gold:hover {
+      background: var(--gold-light);
+    }
+
+    .container {
+      max-width: 1080px;
+      width: 95%;
+      margin: 24px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.25) 0%, rgba(245, 158, 11, 0.2) 100%);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: 18px;
+      padding: 22px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    }
+
+    .hero-banner h1 {
+      font-size: 22px;
+      font-weight: 900;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hero-banner p {
+      color: var(--slate-300);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 440px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card-panel {
+      background: var(--panel-dark);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--gold);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--slate-300);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group input, .form-group select {
+      padding: 11px 14px;
+      background: #090d16;
+      border: 1px solid var(--slate-600);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.15s;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+    }
+
+    .password-input-group {
+      display: flex;
+      gap: 6px;
+    }
+
+    .password-input-group input {
+      flex: 1;
+      font-family: monospace;
+      font-size: 15px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      color: var(--gold-light);
+    }
+
+    .btn-key-gen {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--gold);
+      color: var(--gold-light);
+      padding: 0 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+
+    .btn-key-gen:hover {
+      background: var(--gold);
+      color: #000;
+    }
+
+    .btn-submit-dojo {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+      transition: all 0.15s;
+      margin-top: 6px;
+    }
+
+    .btn-submit-dojo:hover {
+      background: #059669;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
+    }
+
+    /* SELECTOR PROMINENTE DE DOJOS */
+    .dojo-select-container {
+      background: rgba(37, 99, 235, 0.12);
+      border: 2px solid rgba(59, 130, 246, 0.4);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .dojo-select-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--sky);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dojo-main-select {
+      width: 100%;
+      padding: 12px 14px;
+      background: #090d16;
+      border: 2px solid var(--sky);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .btn-go-postular {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-go-postular:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    .dojo-list-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 480px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .dojo-card-item {
+      background: #0b1120;
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      transition: all 0.2s ease;
+    }
+
+    .dojo-card-item:hover {
+      border-color: rgba(245, 158, 11, 0.5);
+      background: #0f182b;
+    }
+
+    .dojo-info-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .dojo-name-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dojo-meta-line {
+      font-size: 12px;
+      color: var(--slate-400);
+    }
+
+    .dojo-key-badge {
+      font-family: monospace;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--gold-light);
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px dashed var(--gold);
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    .btn-card-postular {
+      padding: 9px 14px;
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #000;
+      font-weight: 900;
+      font-size: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-card-postular:hover {
+      background: var(--gold-light);
+      transform: scale(1.02);
+    }
+
+    .toast-msg {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #10b981;
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      font-weight: 800;
+      font-size: 14px;
+      display: none;
+      z-index: 9999;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <a href="index.html" class="brand">
+      <img src="heikegani.jpg" alt="Logo Kosen Judo" class="brand-logo-img">
+      <div>
+        <div class="brand-title">KOSEN JUDO <span>HEIKEGANI</span></div>
+        <div class="brand-subtitle">Portal Oficial de Creación de Dojos & Claves</div>
+      </div>
+    </a>
+
+    <div class="header-nav-actions">
+      <a href="index.html" class="btn-header">
+        ⏱️ Mesa Técnica Oficial
+      </a>
+      <a href="postulacion.html" class="btn-header btn-header-gold">
+        🥋 Ir a Postulación de Atletas
+      </a>
+    </div>
+  </header>
+
+  <div class="container">
+    
+    <!-- BANNER HERO -->
+    <div class="hero-banner">
+      <h1>🏢 Creación de Dojos y Generación de Claves</h1>
+      <p>
+        Crea tu <b>Dojo / Club</b> participante y genera su <b>Clave Oficial</b>. Con esta clave podrás ingresar a la página de postulaciones para inscribir y sincronizar a tus competidores con la Mesa Técnica.
+      </p>
+    </div>
+
+    <!-- GRID PRINCIPAL: FORMULARIO + LISTA DESPLEGABLE DE DOJOS -->
+    <div class="main-grid">
+      
+      <!-- FORMULARIO: CREAR NUEVO DOJO -->
+      <div class="card-panel">
+        <div class="card-title" id="form-card-title">➕ Crear Nuevo Dojo y Clave</div>
+        
+        <form id="create-dojo-form" onsubmit="handleSaveDojo(event)">
+          <div class="form-group">
+            <label for="dojo-name">Nombre del Dojo / Club: *</label>
+            <input type="text" id="dojo-name" required placeholder="Ej: Judo Club Samurai" oninput="autoSuggestKey()">
+          </div>
+
+          <div class="form-group">
+            <label for="dojo-sensei">Sensei o Delegado Responsable: *</label>
+            <input type="text" id="dojo-sensei" required placeholder="Ej: Sensei Carlos Mendoza">
+          </div>
+
+          <div class="form-group">
+            <label for="dojo-phone">WhatsApp / Teléfono de Contacto:</label>
+            <input type="tel" id="dojo-phone" placeholder="Ej: +57 300 123 4567">
+          </div>
+
+          <div class="form-group">
+            <label for="dojo-city">Ciudad / Región:</label>
+            <input type="text" id="dojo-city" placeholder="Ej: Cali, Colombia">
+          </div>
+
+          <div class="form-group">
+            <label for="dojo-key">Clave Oficial del Dojo: *</label>
+            <div class="password-input-group">
+              <input type="text" id="dojo-key" required placeholder="Ej: SAMU-2026">
+              <button type="button" class="btn-key-gen" onclick="generateRandomKey()" title="Generar Clave Automática">
+                ⚡ Generar Clave
+              </button>
+            </div>
+            <small style="font-size:11px; color:var(--slate-400); margin-top:2px;">
+              💡 Esta clave será solicitada en la página de postulaciones para ingresar a inscribir atletas.
+            </small>
+          </div>
+
+          <button type="submit" class="btn-submit-dojo" id="btn-submit-text">
+            🏢 Crear Dojo y Generar Clave
+          </button>
+        </form>
+      </div>
+
+      <!-- PANEL DE DOJOS REGISTRADOS (LISTA DESPLEGABLE & ACCESO A POSTULACIONES) -->
+      <div class="card-panel">
+        <div class="card-title">
+          <span>📋 Dojos Registrados (Para no duplicar)</span>
+          <span style="font-size:13px; color:var(--gold); margin-left:auto;" id="dojos-count-badge">(0 Dojos)</span>
+        </div>
+
+        <!-- SELECTOR DESPLEGABLE DE SELECCIÓN RÁPIDA -->
+        <div class="dojo-select-container">
+          <div class="dojo-select-title">
+            <span>👉 Selecciona tu Dojo para ingresar a Postular Atletas:</span>
+          </div>
+          <select id="select-registered-dojos" class="dojo-main-select" onchange="onSelectExistingDojoChange(this.value)">
+            <option value="">-- Selecciona un Dojo Registrado --</option>
+          </select>
+          <button type="button" class="btn-go-postular" onclick="goToPostulacionWithSelected()">
+            🚀 Ir a Postular Atletas con el Dojo Seleccionado
+          </button>
+        </div>
+
+        <div style="font-size:13px; font-weight:700; color:var(--slate-300); margin-bottom:8px;">
+          Listado de Dojos Creados:
+        </div>
+
+        <!-- LISTA DE TARJETAS DE DOJOS -->
+        <div id="dojos-list-container" class="dojo-list-container">
+          <div style="color:var(--slate-400); text-align:center; padding:30px 10px;">
+            Cargando lista de Dojos registrados...
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div id="toast" class="toast-msg"></div>
+
+  <script>
+    let registeredDojos = [];
+
+    function showToast(msg, bg = '#10b981') {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.style.background = bg;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 3500);
+    }
+
+    function generateRandomKey() {
+      const name = document.getElementById('dojo-name').value.trim() || 'DOJO';
+      const clean = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 4) || 'DOJO';
+      const rand = Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('dojo-key').value = `${clean}-${rand}`;
+    }
+
+    function autoSuggestKey() {
+      const keyInput = document.getElementById('dojo-key');
+      if (!keyInput.value) {
+        generateRandomKey();
+      }
+    }
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    async function loadDojosList() {
+      let dojos = [];
+      try {
+        const res = await fetch('/api/dojos');
+        if (res.ok) {
+          dojos = await res.json();
+        }
+      } catch (e) {}
+
+      if (!dojos || dojos.length === 0) {
+        const local = localStorage.getItem('newaza_registered_dojos');
+        if (local) {
+          try { dojos = JSON.parse(local) || []; } catch(e) {}
+        }
+      }
+
+      registeredDojos = dojos;
+      localStorage.setItem('newaza_registered_dojos', JSON.stringify(registeredDojos));
+      renderDojosUI();
+    }
+
+    function renderDojosUI() {
+      const select = document.getElementById('select-registered-dojos');
+      const container = document.getElementById('dojos-list-container');
+      const badge = document.getElementById('dojos-count-badge');
+
+      if (badge) badge.innerText = `(${registeredDojos.length} Dojos)`;
+
+      // 1. Renderizar Menú Desplegable
+      if (select) {
+        select.innerHTML = '<option value="">-- Selecciona un Dojo Registrado para Postular --</option>';
+        registeredDojos.forEach(d => {
+          const opt = document.createElement('option');
+          opt.value = d.id;
+          opt.textContent = `🥋 ${d.name} • Sensei: ${d.sensei || 'N/A'} (Clave: ${d.clave})`;
+          select.appendChild(opt);
+        });
+      }
+
+      // 2. Renderizar Tarjetas
+      if (!container) return;
+      if (registeredDojos.length === 0) {
+        container.innerHTML = `<div style="color:var(--slate-400); text-align:center; padding:30px 10px;">Aún no hay Dojos registrados. Completa el formulario de la izquierda para crear el primero.</div>`;
+        return;
+      }
+
+      let html = '';
+      registeredDojos.forEach(d => {
+        html += `
+          <div class="dojo-card-item">
+            <div class="dojo-info-block">
+              <div class="dojo-name-title">
+                <span>🥋 ${escapeHtml(d.name)}</span>
+              </div>
+              <div class="dojo-meta-line">
+                Sensei: <b>${escapeHtml(d.sensei || 'No especificado')}</b> ${d.city ? `• ${escapeHtml(d.city)}` : ''}
+              </div>
+              <div style="margin-top:2px;">
+                <span class="dojo-key-badge">Clave: ${escapeHtml(d.clave)}</span>
+              </div>
+            </div>
+            <div>
+              <button class="btn-card-postular" onclick="goToPostulacion('${d.id}')">
+                📲 Ir a Postular
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function onSelectExistingDojoChange(dojoId) {
+      if (dojoId) {
+        goToPostulacion(dojoId);
+      }
+    }
+
+    function goToPostulacionWithSelected() {
+      const select = document.getElementById('select-registered-dojos');
+      if (!select || !select.value) {
+        alert('Por favor selecciona un Dojo de la lista desplegable.');
+        return;
+      }
+      goToPostulacion(select.value);
+    }
+
+    function goToPostulacion(dojoId) {
+      const dojo = registeredDojos.find(d => d.id === dojoId);
+      if (!dojo) return;
+      window.location.href = `postulacion.html?dojoId=${encodeURIComponent(dojo.id)}&dojo=${encodeURIComponent(dojo.name)}`;
+    }
+
+    async function handleSaveDojo(e) {
+      e.preventDefault();
+      const name = document.getElementById('dojo-name').value.trim();
+      const sensei = document.getElementById('dojo-sensei').value.trim();
+      const phone = document.getElementById('dojo-phone').value.trim();
+      const city = document.getElementById('dojo-city').value.trim();
+      const clave = document.getElementById('dojo-key').value.trim();
+
+      if (!name || !sensei || !clave) {
+        alert('Por favor completa el Nombre del Dojo, el Sensei y la Clave Oficial.');
+        return;
+      }
+
+      // VALIDACIÓN ANTI-DUPLICADOS
+      const existing = registeredDojos.find(d => d.name.trim().toLowerCase() === name.toLowerCase());
+      if (existing) {
+        alert(`⚠️ ATENCIÓN: El Dojo "${existing.name}" ya se encuentra registrado con la Clave: ${existing.clave}.\n\nPara no duplicarlo, selecciona este Dojo en la lista desplegable para ingresar directamente a postular atletas.`);
+        const select = document.getElementById('select-registered-dojos');
+        if (select) {
+          select.value = existing.id;
+          select.focus();
+        }
+        return;
+      }
+
+      const payload = {
+        name,
+        sensei,
+        phone,
+        city,
+        clave
+      };
+
+      let savedDojo = null;
+
+      try {
+        const res = await fetch('/api/dojos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          savedDojo = data.dojo;
+        }
+      } catch (err) {}
+
+      if (!savedDojo) {
+        savedDojo = {
+          id: 'dojo_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+          name,
+          sensei,
+          phone,
+          city,
+          clave,
+          createdAt: new Date().toISOString()
+        };
+        registeredDojos.push(savedDojo);
+        localStorage.setItem('newaza_registered_dojos', JSON.stringify(registeredDojos));
+      } else {
+        await loadDojosList();
+      }
+
+      document.getElementById('create-dojo-form').reset();
+      generateRandomKey();
+      renderDojosUI();
+
+      const proceed = confirm(`🎉 ¡Dojo "${name}" creado con éxito!\n\n🔑 Clave Oficial: ${clave}\n\n¿Deseas ir ahora mismo a la página de postulaciones para registrar judokas con este Dojo?`);
+      if (proceed && savedDojo) {
+        goToPostulacion(savedDojo.id);
+      } else {
+        showToast(`🏢 Dojo "${name}" registrado correctamente.`);
+      }
+    }
+
+    function initLiveSync() {
+      if (!window.location.protocol.startsWith('http')) return;
+      if (window.EventSource) {
+        try {
+          const es = new EventSource('/api/tournament/live-events');
+          es.addEventListener('state_update', () => { loadDojosList(); });
+          es.addEventListener('initial_state', () => { loadDojosList(); });
+        } catch(e) {}
+      }
+      setInterval(() => {
+        if (!document.hidden && window.location.protocol.startsWith('http') && navigator.onLine) {
+          loadDojosList();
+        }
+      }, 3000);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      generateRandomKey();
+      loadDojosList();
+      initLiveSync();
+    });
+  </script>
+</body>
+</html>

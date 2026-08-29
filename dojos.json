@@ -1,0 +1,22 @@
+[
+  {
+    "id": "dojo_1787935817948_974",
+    "name": "Heikegani",
+    "sensei": "Rudy",
+    "phone": "22555896",
+    "city": "Sabaneta",
+    "clave": "DOJO-4059",
+    "createdAt": "2026-08-28T16:50:17.948Z",
+    "judokasCount": 1
+  },
+  {
+    "id": "dojo_1787941956163_741",
+    "name": "Dojo Test Sync 458",
+    "sensei": "Sensei Test",
+    "phone": "3001234567",
+    "city": "Medellin",
+    "clave": "TEST-1332",
+    "createdAt": "2026-08-28T18:32:36.163Z",
+    "judokasCount": 1
+  }
+]

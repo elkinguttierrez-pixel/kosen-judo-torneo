@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "name": "kosen-judo-torneo",
+  "builds": [
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "postulacion.html", "use": "@vercel/static" },
+    { "src": "server.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/server.js" },
+    { "src": "/postulacion", "dest": "/postulacion.html" },
+    { "src": "/postulacion.html", "dest": "/postulacion.html" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
+}

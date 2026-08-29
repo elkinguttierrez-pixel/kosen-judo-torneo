@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Oficial de Postulación de Judokas | KOSEN JUDO HEIKEGANI</title>
+  <link rel="icon" type="image/jpeg" href="heikegani.jpg">
+  <script src="qrcode.min.js"></script>
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --panel-dark: #131d2e;
+      --panel-border: #1e293b;
+      --panel-hover: #1e2e47;
+      
+      --gold: #f59e0b;
+      --gold-light: #fbbf24;
+      --red: #ef4444;
+      --green: #10b981;
+      --green-hover: #059669;
+      --sky: #38bdf8;
+      --pink: #f43f5e;
+      --blue: #2563eb;
+      --slate-300: #cbd5e1;
+      --slate-400: #94a3b8;
+      --slate-600: #475569;
+      --slate-800: #1e293b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 40px;
+    }
+
+    header {
+      background: linear-gradient(180deg, #162032 0%, #0f172a 100%);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #24344d;
+      flex-wrap: wrap;
+      gap: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+    }
+
+    .brand-logo-img {
+      width: 58px;
+      height: 58px;
+      border-radius: 14px;
+      object-fit: contain;
+      border: 2px solid var(--gold);
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.5);
+      background: #080c14;
+      padding: 2px;
+    }
+
+    .brand-title {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      color: #fff;
+    }
+
+    .brand-title span {
+      color: var(--gold);
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: var(--slate-400);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .header-nav-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .header-badge {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--gold);
+      color: var(--gold-light);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-header-link {
+      background: #1e293b;
+      border: 1px solid var(--slate-600);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .btn-header-link:hover {
+      background: #334155;
+    }
+
+    .container {
+      max-width: 960px;
+      width: 95%;
+      margin: 24px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.2) 0%, rgba(245, 158, 11, 0.15) 100%);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 16px;
+      padding: 22px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .hero-banner h1 {
+      font-size: 24px;
+      font-weight: 900;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hero-banner p {
+      color: var(--slate-300);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .rules-pills-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .rule-pill {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--sky);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-panel {
+      background: var(--panel-dark);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--gold);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 12px;
+    }
+
+    /* CARD DE LOGIN / AUTENTICACIÓN POR CLAVE */
+    .auth-login-card {
+      background: linear-gradient(180deg, #131d2e 0%, #0c1322 100%);
+      border: 2px solid var(--gold);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 25px rgba(245, 158, 11, 0.2);
+    }
+
+    .auth-login-card h2 {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--gold-light);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .auth-session-active-card {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(37, 99, 235, 0.15) 100%);
+      border: 1px solid #10b981;
+      border-radius: 14px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .session-dojo-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .session-meta-text {
+      font-size: 12px;
+      color: #cbd5e1;
+      margin-top: 4px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 640px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--slate-300);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group input, .form-group select {
+      padding: 12px 14px;
+      background: #090d16;
+      border: 1px solid var(--slate-600);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+    }
+
+    .form-group input:disabled, .form-group select:disabled {
+      background: #111827;
+      color: #94a3b8;
+      border-color: #374151;
+      cursor: not-allowed;
+    }
+
+    .auto-category-box {
+      background: rgba(37, 99, 235, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.35);
+      padding: 14px 18px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .auto-category-box .cat-title {
+      font-size: 11px;
+      color: var(--sky);
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .auto-category-box .cat-name {
+      font-size: 16px;
+      font-weight: 900;
+      color: #fff;
+      margin-top: 2px;
+    }
+
+    .auto-category-box .cat-time {
+      font-size: 13px;
+      color: var(--gold);
+      font-weight: 800;
+      background: rgba(0,0,0,0.3);
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .btn-submit-judoka {
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .btn-submit-judoka:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    .roster-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .judoka-roster-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .judoka-roster-card {
+      background: #0b1120;
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      transition: all 0.15s;
+    }
+
+    .judoka-roster-card.male {
+      border-left: 4px solid #3b82f6;
+    }
+
+    .judoka-roster-card.female {
+      border-left: 4px solid #f43f5e;
+    }
+
+    .judoka-roster-card:hover {
+      background: #111b2e;
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+
+    .roster-info-main {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .roster-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .roster-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .tag-pill {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+
+    .tag-gender-m { background: #1e3a8a; color: #93c5fd; }
+    .tag-gender-f { background: #881337; color: #fda4af; }
+    .tag-belt { background: #1e293b; color: #f8fafc; border: 1px solid var(--slate-600); }
+    .tag-cat { background: rgba(245, 158, 11, 0.2); color: var(--gold); }
+
+    .btn-delete-item {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #f87171;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-delete-item:hover {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 36px 16px;
+      color: var(--slate-400);
+      font-size: 14px;
+      background: #090d16;
+      border-radius: 12px;
+      border: 1px dashed var(--panel-border);
+    }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .btn-action-big {
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-whatsapp {
+      background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+    }
+
+    .btn-whatsapp:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(37, 211, 102, 0.5);
+    }
+
+    .btn-save-mesa {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-save-mesa:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-download-json {
+      background: #1e293b;
+      border: 1px solid var(--slate-600);
+      color: #fff;
+    }
+
+    .btn-download-json:hover {
+      background: #334155;
+    }
+
+    .toast-msg {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #10b981;
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      font-weight: 800;
+      font-size: 14px;
+      display: none;
+      z-index: 9999;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .footer-note {
+      text-align: center;
+      color: var(--slate-400);
+      font-size: 12px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <a href="index.html" class="brand">
+      <img src="heikegani.jpg" alt="Logo Kosen Judo" class="brand-logo-img">
+      <div>
+        <div class="brand-title">KOSEN JUDO <span>HEIKEGANI</span></div>
+        <div class="brand-subtitle">Portal Oficial de Postulación de Judokas</div>
+      </div>
+    </a>
+    
+    <div class="header-nav-group">
+      <a href="crear_dojos.html" class="btn-header-link" target="_blank">
+        🏢 Crear / Administrar Dojos
+      </a>
+      <a href="index.html" class="btn-header-link">
+        ⏱️ Mesa Técnica
+      </a>
+      <div class="header-badge">
+        🥋 Ne-Waza Championship 2026
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    
+    <!-- BANNER DE BIENVENIDA -->
+    <div class="hero-banner">
+      <h1>📋 Postulación Oficial de Competidores por Dojo</h1>
+      <p>
+        Bienvenido Sensei / Delegado. Ingresa con la <b>clave de acceso</b> asignada a tu Dojo para registrar o actualizar a tus competidores para el Torneo Kosen Judo Heikegani. Al inscribirlos, la nómina se sincronizará automáticamente con la <b>Mesa Técnica Oficial</b>.
+      </p>
+      <div class="rules-pills-row">
+        <span class="rule-pill">⚔️ 2 de 3 Ippones para ganar</span>
+        <span class="rule-pill">⏱️ Categorías reglamentarias por edad y peso</span>
+        <span class="rule-pill">🏆 1º: 10 pts | 2º: 5 pts | 3º: 3 pts | 4º: 2 pts | Resto: 1 pt</span>
+      </div>
+    </div>
+
+    <!-- SECCIÓN DE AUTENTICACIÓN / INGRESO DE DOJO CON CLAVE -->
+    <div id="auth-section" class="auth-login-card">
+      <h2>🔐 Ingreso Seguro de Dojo / Club</h2>
+      <p style="font-size:13px; color:var(--slate-300); margin-bottom:16px;">
+        Selecciona o escribe el nombre de tu Dojo e ingresa la <b>clave de acceso</b> asignada por la organización:
+      </p>
+
+      <form id="dojo-auth-form" onsubmit="handleDojoAuth(event)">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="auth-dojo-select">Selecciona tu Dojo / Club:</label>
+            <select id="auth-dojo-select" onchange="onAuthDojoSelectChange()">
+              <option value="">-- Seleccionar Dojo Registrado --</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="manual-dojo-name-group">
+            <label for="auth-dojo-name">O Escribe el Nombre del Dojo:</label>
+            <input type="text" id="auth-dojo-name" placeholder="Ej: Judo Club Samurai">
+          </div>
+
+          <div class="form-group full-width">
+            <label for="auth-dojo-key">Clave de Acceso del Dojo: *</label>
+            <input type="text" id="auth-dojo-key" required placeholder="Ej: SAMU-2026" style="font-family:monospace; font-weight:bold; letter-spacing:1px; color:var(--gold-light);">
+          </div>
+
+          <div class="form-group full-width">
+            <button type="submit" class="btn-action-big" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color:#000; font-weight:900; border:none;">
+              🔓 Desbloquear e Ingresar al Portal de Mi Dojo
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div style="margin-top:14px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.08); font-size:13px; color:var(--slate-400); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <span>¿Tu Dojo aún no está registrado o no tienes clave?</span>
+        <a href="crear_dojos.html" target="_blank" style="color:var(--sky); font-weight:800; text-decoration:none;">
+          👉 Registrar mi Dojo y Obtener Clave aquí
+        </a>
+      </div>
+    </div>
+
+    <!-- ESTADO DE SESIÓN ACTIVA DEL DOJO -->
+    <div id="active-session-card" class="auth-session-active-card" style="display:none;">
+      <div>
+        <div class="session-dojo-title">
+          <span style="font-size:22px;">🥋</span>
+          <span>Dojo Autenticado: <b id="active-dojo-name" style="color:var(--gold);">Dojo</b></span>
+          <span style="background:#10b981; color:#fff; font-size:11px; padding:2px 8px; border-radius:12px; font-weight:bold;">Verificado 🔒</span>
+        </div>
+        <div class="session-meta-text" id="active-dojo-details">
+          Sensei: N/A • Ciudad: N/A
+        </div>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <button onclick="logoutDojoSession()" style="background:#1e293b; border:1px solid var(--slate-600); color:#fff; padding:8px 14px; border-radius:8px; font-weight:bold; font-size:12px; cursor:pointer;">
+          🔒 Cambiar Dojo / Cerrar Sesión
+        </button>
+      </div>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL DE INSCRIPCIÓN (BLOQUEADO SI NO ESTÁ AUTENTICADO) -->
+    <div id="roster-management-area" style="display:none; flex-direction:column; gap:24px;">
+      
+      <!-- PASO 1: DATOS DEL DOJO (VERIFICADOS) -->
+      <div class="card-panel">
+        <div class="card-title">🏢 1. Datos del Dojo Responsable</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="dojo-name">Nombre del Dojo / Club:</label>
+            <input type="text" id="dojo-name" readonly required style="background:#0b1120; color:var(--gold-light); font-weight:bold;">
+          </div>
+          <div class="form-group">
+            <label for="dojo-sensei">Sensei o Delegado Responsable: *</label>
+            <input type="text" id="dojo-sensei" required placeholder="Ej: Sensei Carlos Mendoza" oninput="saveDojoInfo()">
+          </div>
+          <div class="form-group">
+            <label for="dojo-phone">WhatsApp / Teléfono de Contacto: *</label>
+            <input type="tel" id="dojo-phone" required placeholder="Ej: +57 300 123 4567" oninput="saveDojoInfo()">
+          </div>
+          <div class="form-group">
+            <label for="dojo-city">Ciudad / Región:</label>
+            <input type="text" id="dojo-city" placeholder="Ej: Bogotá, Colombia" oninput="saveDojoInfo()">
+          </div>
+        </div>
+      </div>
+
+      <!-- PASO 2: AGREGAR JUDOKA -->
+      <div class="card-panel">
+        <div class="card-title">🥋 2. Inscribir Competidor a la Nómina Oficial</div>
+        <form id="add-judoka-form" onsubmit="handleAddJudoka(event)">
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label for="j-name">Nombre y Apellidos del Judoka: *</label>
+              <input type="text" id="j-name" required placeholder="Ej: Juan Sebastián Ramírez">
+            </div>
+
+            <div class="form-group">
+              <label for="j-gender">Rama / Género: *</label>
+              <select id="j-gender" required onchange="calculateCategory()">
+                <option value="Masculino">♂️ Masculino</option>
+                <option value="Femenino">♀️ Femenino</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="j-belt">Grado / Cinturón: *</label>
+              <select id="j-belt" required>
+                <option value="Blanco">⚪ Cinturón Blanco (6º Kyu)</option>
+                <option value="Amarillo">🟡 Cinturón Amarillo (5º Kyu)</option>
+                <option value="Naranja">🟠 Cinturón Naranja (4º Kyu)</option>
+                <option value="Verde">🟢 Cinturón Verde (3º Kyu)</option>
+                <option value="Azul" selected>🔵 Cinturón Azul (2º Kyu)</option>
+                <option value="Marrón">🟤 Cinturón Marrón (1º Kyu)</option>
+                <option value="Negro">⚫ Cinturón Negro (Dan)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="j-age">Edad Cumplida (Años): *</label>
+              <input type="number" id="j-age" min="4" max="90" required placeholder="Ej: 16" oninput="calculateCategory()">
+            </div>
+
+            <div class="form-group">
+              <label for="j-weight">Peso Corporal (kg): *</label>
+              <input type="number" id="j-weight" step="0.1" min="15" max="250" required placeholder="Ej: 66.5">
+            </div>
+
+            <div class="form-group full-width">
+              <div class="auto-category-box">
+                <div>
+                  <div class="cat-title">⚡ Categoría Reglamentaria Asignada:</div>
+                  <div class="cat-name" id="preview-cat-text">Ingresa la edad para calcular</div>
+                </div>
+                <div class="cat-time" id="preview-time-text">Tiempo: --:--</div>
+              </div>
+            </div>
+
+            <div class="form-group full-width">
+              <button type="submit" class="btn-submit-judoka">
+                ➕ Agregar Judoka a la Nómina de Mi Dojo
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- PASO 3: NÓMINA DE JUDOKAS POSTULADOS -->
+      <div class="card-panel">
+        <div class="roster-header">
+          <div class="card-title" style="margin-bottom:0; border-bottom:none; padding-bottom:0;">
+            📜 Nómina de Judokas Postulados por Mi Dojo
+          </div>
+          <span style="font-size:14px; font-weight:bold; color:var(--gold);" id="roster-count-badge">0 Judokas</span>
+        </div>
+
+        <div id="roster-container" class="judoka-roster-list">
+          <div class="empty-state">
+            Aún no has agregado judokas a la nómina de tu Dojo. Completa el formulario de arriba para agregarlos.
+          </div>
+        </div>
+
+        <!-- ESTADO DE SINCRONIZACIÓN -->
+        <div id="sync-status-box" style="margin-top:12px; background:rgba(37, 99, 235, 0.15); border:1px solid rgba(59, 130, 246, 0.4); padding:12px 16px; border-radius:10px; font-size:13px; display:none; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+          <span id="sync-status-text">⚡ Nómina lista para sincronizar con la mesa técnica oficial.</span>
+          <button onclick="saveDirectToMesa()" style="background:#10b981; color:#fff; border:none; border-radius:8px; padding:8px 16px; font-weight:800; font-size:13px; cursor:pointer;">
+            🚀 Sincronizar Ahora
+          </button>
+        </div>
+
+        <!-- BOTONES DE ACCIÓN / ENVÍO -->
+        <div class="actions-grid" id="actions-block" style="display:none;">
+          <button class="btn-action-big btn-save-mesa" style="grid-column: 1 / -1; font-size:16px;" onclick="saveDirectToMesa()">
+            💾 Sincronizar e Inscribir en la Mesa Técnica Oficial
+          </button>
+          <button class="btn-action-big btn-whatsapp" onclick="sendViaWhatsApp()">
+            📲 Enviar Nómina Oficial por WhatsApp
+          </button>
+          <button class="btn-action-big btn-download-json" onclick="downloadJSON()">
+            📥 Descargar Ficha (.JSON)
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-note">
+      KOSEN JUDO HEIKEGANI • Sistema de Gestión y Mesa Técnica Oficial • Ne-Waza Tournament
+    </div>
+
+  </div>
+
+  <div id="toast" class="toast-msg"></div>
+
+  <script>
+    let currentAuthDojo = null;
+    let roster = [];
+    let registeredDojosList = [];
+
+    // CATEGORIZACIÓN OFICIAL KOSEN JUDO
+    function getCategoryByAge(age) {
+      const a = parseInt(age, 10);
+      if (isNaN(a)) return { category: 'Ingresa la edad para calcular', durationSec: 120, timeFormatted: '--:--' };
+      if (a <= 10) return { category: 'Sub-10 (Pre-Infantil)', durationSec: 60, timeFormatted: '1:00 min' };
+      if (a >= 11 && a <= 13) return { category: 'Sub-13 (Infantil A)', durationSec: 90, timeFormatted: '1:30 min' };
+      if (a >= 14 && a <= 16) return { category: 'Sub-16 (Cadete / Infantil B)', durationSec: 120, timeFormatted: '2:00 min' };
+      if (a >= 17 && a <= 19) return { category: 'Sub-20 (Junior)', durationSec: 150, timeFormatted: '2:30 min' };
+      if (a >= 20 && a <= 30) return { category: 'Senior (Adultos)', durationSec: 180, timeFormatted: '3:00 min' };
+      if (a >= 31 && a <= 49) return { category: 'Máster A (31-49 años)', durationSec: 150, timeFormatted: '2:30 min' };
+      return { category: 'Máster B (+50 años)', durationSec: 120, timeFormatted: '2:00 min' };
+    }
+
+    function calculateCategory() {
+      const ageInput = document.getElementById('j-age').value;
+      const catInfo = getCategoryByAge(ageInput);
+      document.getElementById('preview-cat-text').innerText = catInfo.category;
+      document.getElementById('preview-time-text').innerText = `Tiempo Oficial: ${catInfo.timeFormatted}`;
+    }
+
+    function showToast(msg, bg = '#10b981') {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.style.background = bg;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 3500);
+    }
+
+    // CARGAR LISTA DE DOJOS PARA EL SELECT DE INICIO DE SESIÓN
+    async function loadRegisteredDojosForSelect() {
+      try {
+        const res = await fetch('/api/dojos');
+        if (res.ok) {
+          registeredDojosList = await res.json();
+        }
+      } catch (e) {}
+
+      if (!registeredDojosList || registeredDojosList.length === 0) {
+        const local = localStorage.getItem('newaza_registered_dojos');
+        if (local) {
+          try { registeredDojosList = JSON.parse(local) || []; } catch(e) {}
+        }
+      }
+
+      const select = document.getElementById('auth-dojo-select');
+      select.innerHTML = '<option value="">-- Seleccionar Dojo Registrado --</option>';
+      registeredDojosList.forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d.id;
+        opt.text = `🏢 ${d.name} (${d.city || 'Club'})`;
+        select.appendChild(opt);
+      });
+    }
+
+    function onAuthDojoSelectChange() {
+      const select = document.getElementById('auth-dojo-select');
+      const nameInput = document.getElementById('auth-dojo-name');
+      const manualGroup = document.getElementById('manual-dojo-name-group');
+
+      if (select.value) {
+        const dojo = registeredDojosList.find(d => d.id === select.value);
+        if (dojo) {
+          nameInput.value = dojo.name;
+          manualGroup.style.display = 'none';
+          document.getElementById('auth-dojo-key').focus();
+        }
+      } else {
+        manualGroup.style.display = 'flex';
+      }
+    }
+
+    // AUTENTICAR DOJO CON CLAVE
+    async function handleDojoAuth(e) {
+      if (e) e.preventDefault();
+      const selectVal = document.getElementById('auth-dojo-select').value;
+      let dojoName = document.getElementById('auth-dojo-name').value.trim();
+      let dojoId = selectVal || null;
+
+      if (selectVal) {
+        const d = registeredDojosList.find(item => item.id === selectVal);
+        if (d) dojoName = d.name;
+      }
+
+      const clave = document.getElementById('auth-dojo-key').value.trim();
+
+      if (!dojoName && !dojoId) {
+        alert('Por favor selecciona o escribe el nombre de tu Dojo.');
+        return;
+      }
+
+      if (!clave) {
+        alert('Por favor ingresa la clave de acceso del Dojo.');
+        return;
+      }
+
+      let authenticated = false;
+      let dojoData = null;
+      let existingJudokas = [];
+
+      // 1. Intentar validar con API Backend
+      try {
+        const res = await fetch('/api/dojos/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dojoId, name: dojoName, clave })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success) {
+            authenticated = true;
+            dojoData = data.dojo;
+            existingJudokas = data.judokas || [];
+          }
+        }
+      } catch(err) {}
+
+      // 2. Fallback con base local si no hubo respuesta del servidor
+      if (!authenticated && registeredDojosList.length > 0) {
+        const match = registeredDojosList.find(d => {
+          const idMatch = dojoId && d.id === dojoId;
+          const nameMatch = dojoName && d.name.trim().toLowerCase() === dojoName.trim().toLowerCase();
+          const keyMatch = (d.clave || '').trim().toLowerCase() === clave.toLowerCase();
+          return (idMatch || nameMatch) && keyMatch;
+        });
+
+        if (match) {
+          authenticated = true;
+          dojoData = match;
+          // Buscar judokas guardados en local para este dojo
+          const savedRoster = localStorage.getItem(`kosen_roster_${match.id}`) || localStorage.getItem('kosen_postulacion_roster');
+          if (savedRoster) {
+            try { existingJudokas = JSON.parse(savedRoster) || []; } catch(e) {}
+          }
+        }
+      }
+
+      if (authenticated && dojoData) {
+        activateDojoSession(dojoData, existingJudokas);
+        showToast(`🔓 ¡Bienvenido ${dojoData.name}! Portal desbloqueado.`);
+      } else {
+        alert('❌ Clave de acceso incorrecta o Dojo no encontrado.\n\nPor favor verifica tu clave o regístrate en la sección "Crear Dojos".');
+      }
+    }
+
+    // ACTIVAR SESIÓN DE DOJO
+    function activateDojoSession(dojo, initialJudokas = []) {
+      currentAuthDojo = dojo;
+      localStorage.setItem('kosen_auth_dojo', JSON.stringify(dojo));
+
+      // Actualizar campos
+      document.getElementById('active-dojo-name').innerText = dojo.name;
+      document.getElementById('active-dojo-details').innerText = `Sensei: ${dojo.sensei || 'No especificado'} • Teléfono: ${dojo.phone || 'N/A'} • Ciudad: ${dojo.city || 'No registrada'}`;
+      
+      document.getElementById('dojo-name').value = dojo.name;
+      if (dojo.sensei) document.getElementById('dojo-sensei').value = dojo.sensei;
+      if (dojo.phone) document.getElementById('dojo-phone').value = dojo.phone;
+      if (dojo.city) document.getElementById('dojo-city').value = dojo.city;
+
+      // Ocultar sección de login y mostrar área de atletas
+      document.getElementById('auth-section').style.display = 'none';
+      document.getElementById('active-session-card').style.display = 'flex';
+      document.getElementById('roster-management-area').style.display = 'flex';
+
+      // Cargar judokas
+      if (initialJudokas && initialJudokas.length > 0) {
+        roster = initialJudokas;
+      } else {
+        const saved = localStorage.getItem(`kosen_roster_${dojo.id}`);
+        if (saved) {
+          try { roster = JSON.parse(saved) || []; } catch(e) {}
+        }
+      }
+      renderRoster();
+    }
+
+    function logoutDojoSession() {
+      if (confirm('¿Deseas cerrar la sesión del Dojo actual?')) {
+        currentAuthDojo = null;
+        localStorage.removeItem('kosen_auth_dojo');
+        document.getElementById('auth-section').style.display = 'block';
+        document.getElementById('active-session-card').style.display = 'none';
+        document.getElementById('roster-management-area').style.display = 'none';
+        document.getElementById('auth-dojo-key').value = '';
+        showToast('🔒 Sesión cerrada con éxito.');
+      }
+    }
+
+    // PROCESAR PARÁMETROS EN LA URL (?dojoId=...&dojo=...)
+    async function checkUrlParamsAutoLogin() {
+      const params = new URLSearchParams(window.location.search);
+      const dojoId = params.get('dojoId') || params.get('id');
+      const dojoName = params.get('dojo') || params.get('name');
+      const key = params.get('key') || params.get('clave');
+
+      if ((dojoId || dojoName) && key) {
+        if (dojoId) document.getElementById('auth-dojo-select').value = dojoId;
+        if (dojoName) document.getElementById('auth-dojo-name').value = dojoName;
+        document.getElementById('auth-dojo-key').value = key;
+        await handleDojoAuth();
+        return;
+      }
+
+      if (dojoId || dojoName) {
+        if (dojoId) {
+          const select = document.getElementById('auth-dojo-select');
+          if (select) select.value = dojoId;
+          const matched = registeredDojosList.find(d => d.id === dojoId);
+          if (matched) {
+            document.getElementById('auth-dojo-name').value = matched.name;
+            document.getElementById('manual-dojo-name-group').style.display = 'none';
+          }
+        } else if (dojoName) {
+          document.getElementById('auth-dojo-name').value = dojoName;
+        }
+
+        const keyInput = document.getElementById('auth-dojo-key');
+        if (keyInput) {
+          keyInput.focus();
+        }
+        showToast(`🔒 Dojo "${dojoName || 'seleccionado'}" cargado. Por favor ingresa su clave de acceso.`);
+        return;
+      }
+
+      // Si ya había una sesión previa en localStorage
+      const savedAuth = localStorage.getItem('kosen_auth_dojo');
+      if (savedAuth) {
+        try {
+          const parsed = JSON.parse(savedAuth);
+          if (parsed && parsed.clave) {
+            activateDojoSession(parsed);
+          }
+        } catch(e) {}
+      }
+    }
+
+    function saveDojoInfo() {
+      if (!currentAuthDojo) return;
+      currentAuthDojo.sensei = document.getElementById('dojo-sensei').value.trim();
+      currentAuthDojo.phone = document.getElementById('dojo-phone').value.trim();
+      currentAuthDojo.city = document.getElementById('dojo-city').value.trim();
+      localStorage.setItem('kosen_auth_dojo', JSON.stringify(currentAuthDojo));
+    }
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function handleAddJudoka(e) {
+      e.preventDefault();
+      const dojoName = document.getElementById('dojo-name').value.trim();
+      if (!dojoName) {
+        alert('Por favor autentica tu Dojo primero.');
+        return;
+      }
+
+      const name = document.getElementById('j-name').value.trim();
+      const gender = document.getElementById('j-gender').value;
+      const belt = document.getElementById('j-belt').value;
+      const age = parseInt(document.getElementById('j-age').value, 10);
+      const weight = parseFloat(document.getElementById('j-weight').value);
+      const catInfo = getCategoryByAge(age);
+
+      if (!name || isNaN(age) || isNaN(weight)) {
+        alert('Por favor completa todos los campos del judoka correctamente.');
+        return;
+      }
+
+      if (age < 4 || age > 95) {
+        alert('Por favor ingresa una edad válida (entre 4 y 95 años).');
+        return;
+      }
+
+      if (weight < 12 || weight > 250) {
+        alert('Por favor ingresa un peso válido (entre 12 kg y 250 kg).');
+        return;
+      }
+
+      const newJudoka = {
+        id: 'postula_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+        name,
+        gender,
+        belt,
+        age,
+        weight,
+        category: catInfo.category,
+        durationSec: catInfo.durationSec,
+        timeFormatted: catInfo.timeFormatted,
+        dojo: dojoName,
+        dojoId: currentAuthDojo ? currentAuthDojo.id : null,
+        postuladoEn: new Date().toISOString()
+      };
+
+      roster.push(newJudoka);
+      if (currentAuthDojo) {
+        localStorage.setItem(`kosen_roster_${currentAuthDojo.id}`, JSON.stringify(roster));
+      }
+      localStorage.setItem('kosen_postulacion_roster', JSON.stringify(roster));
+      saveDojoInfo();
+
+      // Reset campos de judoka
+      document.getElementById('j-name').value = '';
+      document.getElementById('j-weight').value = '';
+      document.getElementById('j-age').value = '';
+      calculateCategory();
+      document.getElementById('j-name').focus();
+
+      renderRoster();
+      showToast(`🥋 ¡Judoka ${name} agregado con éxito!`);
+      
+      // Auto-sincronizar silencioso con la mesa
+      saveDirectToMesa(true);
+    }
+
+    function removeJudoka(idx) {
+      if (confirm('¿Deseas eliminar este judoka de la nómina?')) {
+        roster.splice(idx, 1);
+        if (currentAuthDojo) {
+          localStorage.setItem(`kosen_roster_${currentAuthDojo.id}`, JSON.stringify(roster));
+        }
+        localStorage.setItem('kosen_postulacion_roster', JSON.stringify(roster));
+        renderRoster();
+        showToast('Judoka eliminado de la nómina.', '#ef4444');
+        saveDirectToMesa(true);
+      }
+    }
+
+    function renderRoster() {
+      const container = document.getElementById('roster-container');
+      const badge = document.getElementById('roster-count-badge');
+      const actions = document.getElementById('actions-block');
+      const syncBox = document.getElementById('sync-status-box');
+
+      badge.innerText = `${roster.length} ${roster.length === 1 ? 'Judoka' : 'Judokas'}`;
+
+      if (roster.length === 0) {
+        container.innerHTML = `<div class="empty-state">Aún no has agregado judokas a la nómina de tu Dojo. Completa el formulario de arriba para agregarlos.</div>`;
+        actions.style.display = 'none';
+        if (syncBox) syncBox.style.display = 'none';
+        return;
+      }
+
+      actions.style.display = 'grid';
+      if (syncBox) syncBox.style.display = 'flex';
+      let html = '';
+      roster.forEach((j, index) => {
+        const isMale = j.gender === 'Masculino';
+        html += `
+          <div class="judoka-roster-card ${isMale ? 'male' : 'female'}">
+            <div class="roster-info-main">
+              <div class="roster-name">${index + 1}. ${escapeHtml(j.name)}</div>
+              <div class="roster-tags">
+                <span class="tag-pill ${isMale ? 'tag-gender-m' : 'tag-gender-f'}">${isMale ? '♂️ Masc' : '♀️ Fem'}</span>
+                <span class="tag-pill tag-belt">🥋 ${escapeHtml(j.belt)}</span>
+                <span class="tag-pill tag-cat">⚡ ${escapeHtml(j.category)}</span>
+                <span class="tag-pill" style="background:#1e293b; color:#93c5fd;">⚖️ ${j.weight} kg</span>
+                <span class="tag-pill" style="background:#1e293b; color:#cbd5e1;">🎂 ${j.age} años</span>
+              </div>
+            </div>
+            <button class="btn-delete-item" onclick="removeJudoka(${index})">🗑️ Quitar</button>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    function sendViaWhatsApp() {
+      if (roster.length === 0) {
+        alert('Agrega al menos un judoka para enviar la postulación.');
+        return;
+      }
+      const dojoName = document.getElementById('dojo-name').value.trim() || 'Dojo Sin Nombre';
+      const sensei = document.getElementById('dojo-sensei').value.trim() || 'No especificado';
+      const phone = document.getElementById('dojo-phone').value.trim() || 'No especificado';
+      const city = document.getElementById('dojo-city').value.trim() || 'No especificada';
+
+      let msg = `🥋 *NÓMINA OFICIAL DE JUDOKAS - TORNEO KOSEN JUDO HEIKEGANI*\n\n`;
+      msg += `🏢 *Dojo / Club:* ${dojoName}\n`;
+      msg += `👤 *Sensei / Delegado:* ${sensei}\n`;
+      msg += `📞 *Teléfono:* ${phone}\n`;
+      msg += `📍 *Ciudad:* ${city}\n`;
+      msg += `👥 *Total Competidores Postulados:* ${roster.length}\n\n`;
+      msg += `📋 *LISTADO DE ATLETAS:*\n`;
+
+      roster.forEach((j, i) => {
+        msg += `\n${i + 1}. *${j.name}*\n`;
+        msg += `   • Rama: ${j.gender}\n`;
+        msg += `   • Edad: ${j.age} años | Peso: ${j.weight} kg\n`;
+        msg += `   • Cinturón: ${j.belt}\n`;
+        msg += `   • Categoría: ${j.category} (${j.timeFormatted})\n`;
+      });
+
+      msg += `\n_Enviado desde el Portal Oficial de Postulación Kosen Judo Heikegani_ ⚡`;
+
+      const encoded = encodeURIComponent(msg);
+      window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank');
+    }
+
+    function saveDirectToMesa(isSilent = false) {
+      if (roster.length === 0) {
+        if (!isSilent) alert('Agrega al menos un judoka a la nómina.');
+        return;
+      }
+
+      const dojoName = document.getElementById('dojo-name').value.trim() || 'Dojo Sin Nombre';
+      const sensei = document.getElementById('dojo-sensei').value.trim();
+      const phone = document.getElementById('dojo-phone').value.trim();
+      const city = document.getElementById('dojo-city').value.trim();
+      const dojoId = currentAuthDojo ? currentAuthDojo.id : null;
+      const clave = currentAuthDojo ? currentAuthDojo.clave : null;
+
+      const payload = {
+        dojoId,
+        clave,
+        dojo: dojoName,
+        sensei,
+        phone,
+        city,
+        judokas: roster
+      };
+
+      const syncStatusText = document.getElementById('sync-status-text');
+
+      fetch('/api/postular', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          if (syncStatusText) {
+            syncStatusText.innerHTML = `🟢 <b>Sincronizado:</b> Nómina de ${roster.length} judokas enviada y actualizada en la Mesa Técnica Oficial.`;
+          }
+          if (!isSilent) {
+            showToast(`✅ ¡Nómina de ${roster.length} judokas sincronizada con la Mesa Técnica!`, '#10b981');
+            alert(`🎉 ¡Excelente Sensei!\n\nLa nómina de ${roster.length} competidores del "${dojoName}" ha sido recibida y registrada exitosamente en la Mesa Técnica Oficial.`);
+          }
+        }
+      })
+      .catch(() => {
+        if (syncStatusText) {
+          syncStatusText.innerHTML = `💾 <b>Guardado Localmente:</b> ${roster.length} judokas guardados en tu navegador.`;
+        }
+        if (!isSilent) {
+          showToast(`✅ Nómina guardada localmente (${roster.length} judokas).`, '#10b981');
+        }
+      });
+
+      // Guardar también en localStorage del navegador si comparte equipo
+      try {
+        let currentJudokas = JSON.parse(localStorage.getItem('newaza_judokas') || '[]');
+        roster.forEach(item => {
+          const exists = currentJudokas.some(c => c.name.toLowerCase() === item.name.toLowerCase() && c.dojo.toLowerCase() === item.dojo.toLowerCase());
+          if (!exists) {
+            currentJudokas.push({
+              id: item.id,
+              name: item.name,
+              gender: item.gender,
+              dojo: item.dojo,
+              age: item.age,
+              weight: item.weight,
+              belt: item.belt,
+              category: item.category,
+              durationSec: item.durationSec,
+              timeFormatted: item.timeFormatted
+            });
+          }
+        });
+        localStorage.setItem('newaza_judokas', JSON.stringify(currentJudokas));
+      } catch(e) {}
+    }
+
+    function downloadJSON() {
+      if (roster.length === 0) {
+        alert('No hay judokas para exportar.');
+        return;
+      }
+      const dojoName = document.getElementById('dojo-name').value.trim() || 'Dojo';
+      const exportData = {
+        dojoId: currentAuthDojo ? currentAuthDojo.id : null,
+        dojo: dojoName,
+        sensei: document.getElementById('dojo-sensei').value.trim(),
+        phone: document.getElementById('dojo-phone').value.trim(),
+        city: document.getElementById('dojo-city').value.trim(),
+        fechaPostulacion: new Date().toISOString(),
+        judokas: roster
+      };
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `nomina_${dojoName.replace(/\s+/g, '_')}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast('📥 Archivo JSON descargado exitosamente.');
+    }
+
+    function initLiveDojosSync() {
+      if (!window.location.protocol.startsWith('http')) return;
+      if (window.EventSource) {
+        try {
+          const es = new EventSource('/api/tournament/live-events');
+          es.addEventListener('state_update', () => { loadRegisteredDojosForSelect(); });
+          es.addEventListener('initial_state', () => { loadRegisteredDojosForSelect(); });
+        } catch(e) {}
+      }
+      setInterval(() => {
+        if (!document.hidden && window.location.protocol.startsWith('http') && navigator.onLine) {
+          loadRegisteredDojosForSelect();
+        }
+      }, 3000);
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      calculateCategory();
+      await loadRegisteredDojosForSelect();
+      await checkUrlParamsAutoLogin();
+      initLiveDojosSync();
+    });
+  </script>
+</body>
+</html>
