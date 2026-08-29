@@ -2428,6 +2428,9 @@
       <button class="btn-action" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color:#000; font-weight:900; border:none;" onclick="switchTab('qr')" title="Generar QR para postulación de dojos">
         📱 Generar QR
       </button>
+      <button class="btn-action" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%); color:#fff; font-weight:800; border:none; box-shadow:0 0 10px rgba(16,185,129,0.4);" onclick="openModal('modal-backup-manager')" title="Copia de Seguridad y Restauración del Torneo">
+        💾 Respaldo
+      </button>
       <button class="btn-action" onclick="toggleSound()" id="btn-sound-toggle" title="Activar/Desactivar Sonido">
         🔊 Audio
       </button>
@@ -2969,6 +2972,7 @@
             <input type="text" id="table-search-input" placeholder="Buscar judoka, club, edad, peso..." oninput="renderJudokasTable()">
           </div>
           <button class="btn-action" onclick="switchTab('qr')">📱 Generar QR</button>
+          <button class="btn-action" style="background:#10b981; border-color:#059669; font-weight:bold;" onclick="openModal('modal-backup-manager')">💾 Respaldo Torneo</button>
           <button class="btn-action" onclick="exportJudokasJSON()">📥 Exportar JSON</button>
           <button class="btn-action" onclick="clearAllJudokas()" style="color:#f87171;">🗑️ Limpiar</button>
         </div>
@@ -3423,6 +3427,49 @@ Dojo: Bushido
       <div class="modal-actions">
         <button class="btn-action" onclick="closeModal('modal-import-clipboard')">Cancelar</button>
         <button class="btn-action" style="background:#10b981; border-color:#059669; font-weight:900;" onclick="parseAndImportTextRoster()">⚡ Procesar e Inscribir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: GESTOR DE COPIA DE SEGURIDAD Y RESTAURACIÓN INTEGRAL -->
+  <div class="modal-overlay" id="modal-backup-manager">
+    <div class="modal-card" style="max-width:540px;">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+        <span style="font-size:32px;">💾</span>
+        <div>
+          <h2 style="margin:0; font-size:18px; color:var(--gold);">RESPALDO & RESTAURACIÓN DEL TORNEO</h2>
+          <div style="font-size:12px; color:var(--slate-400);">Garantía de persistencia total: guarda y recupera todo en segundos.</div>
+        </div>
+      </div>
+
+      <div style="background:#0f172a; border:1px solid var(--panel-border); border-radius:12px; padding:16px; margin-bottom:16px;">
+        <div style="font-size:13px; font-weight:700; color:#fff; margin-bottom:6px;">1. Descargar Copia de Seguridad (.json)</div>
+        <p style="font-size:12px; color:var(--slate-300); margin-bottom:12px;">
+          Exporta un archivo seguro con todos los judokas inscritos, clubes/dojos creados, claves, historial de combates, puntos y llaves generadas.
+        </p>
+        <button class="btn-action" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%); color:#fff; font-weight:900; width:100%; padding:10px;" onclick="exportFullTournamentBackupJSON()">
+          📥 Descargar Copia de Seguridad Completa (JSON)
+        </button>
+      </div>
+
+      <div style="background:#0f172a; border:1px solid var(--panel-border); border-radius:12px; padding:16px; margin-bottom:16px;">
+        <div style="font-size:13px; font-weight:700; color:#fff; margin-bottom:6px;">2. Restaurar Torneo desde Archivo (.json)</div>
+        <p style="font-size:12px; color:var(--slate-300); margin-bottom:12px;">
+          Si cambiaste de computadora o recargaste en un dispositivo nuevo, sube el archivo de respaldo para restaurar todo de inmediato.
+        </p>
+        <input type="file" id="input-full-backup-file" accept=".json" style="display:none;" onchange="handleBackupFileSelected(event)">
+        <button class="btn-action" style="background:linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color:#fff; font-weight:900; width:100%; padding:10px;" onclick="document.getElementById('input-full-backup-file').click()">
+          📂 Seleccionar y Restaurar Archivo JSON
+        </button>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--panel-border); padding-top:12px;">
+        <button class="btn-action" style="background:rgba(239, 68, 68, 0.15); color:#f87171; border:1px solid #ef4444; font-size:12px;" onclick="clearAllJudokas()">
+          🗑️ Vaciar Base de Datos (0)
+        </button>
+        <button class="btn-action" onclick="closeModal('modal-backup-manager')">
+          Cerrar
+        </button>
       </div>
     </div>
   </div>
@@ -4095,6 +4142,7 @@ Dojo: Bushido
       }
 
       localStorage.setItem('newaza_registered_dojos', JSON.stringify(mesaRegisteredDojos));
+      syncTournamentStateToServer();
       cancelMesaEditDojo();
       await loadMesaDojosList();
       updateDojoDatalist();
@@ -4131,6 +4179,7 @@ Dojo: Bushido
       } catch(e) {}
       mesaRegisteredDojos = mesaRegisteredDojos.filter(d => d.id !== id);
       localStorage.setItem('newaza_registered_dojos', JSON.stringify(mesaRegisteredDojos));
+      syncTournamentStateToServer();
       renderMesaDojosTable();
       updateDojosBadges();
       showToast(`🗑️ Dojo "${name}" eliminado.`, '#ef4444');
@@ -4744,6 +4793,102 @@ Dojo: Bushido
       if (!datalist) return;
       const dojos = Array.from(new Set(registeredJudokas.map(j => j.dojo)));
       datalist.innerHTML = dojos.map(d => `<option value="${escapeHtml(d)}">`).join('');
+    }
+
+    function openModal(modalId) {
+      const el = document.getElementById(modalId);
+      if (el) el.style.display = 'flex';
+    }
+
+    function exportFullTournamentBackupJSON() {
+      const backupData = {
+        app: 'kosen-judo-heikegani',
+        version: lastServerStateVersion || 1,
+        exportedAt: new Date().toISOString(),
+        judokas: registeredJudokas,
+        dojos: mesaRegisteredDojos,
+        matchHistory: matchHistory,
+        dojoLeaderboard: dojoLeaderboard,
+        categoryPlacements: categoryPlacements,
+        liveMatch: getLiveMatchObject()
+      };
+
+      const now = new Date();
+      const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `respaldo_torneo_kosen_judo_${dateStr}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast('💾 ¡Copia de seguridad completa descargada exitosamente!', '#10b981');
+    }
+
+    function handleBackupFileSelected(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (!data) throw new Error('Archivo de respaldo vacío o inválido');
+
+          if (data.judokas && Array.isArray(data.judokas)) {
+            registeredJudokas = data.judokas;
+            localStorage.setItem('newaza_judokas', JSON.stringify(registeredJudokas));
+          } else if (Array.isArray(data)) {
+            registeredJudokas = data;
+            localStorage.setItem('newaza_judokas', JSON.stringify(registeredJudokas));
+          }
+
+          if (data.dojos && Array.isArray(data.dojos)) {
+            mesaRegisteredDojos = data.dojos;
+            localStorage.setItem('newaza_registered_dojos', JSON.stringify(mesaRegisteredDojos));
+          }
+
+          if (data.matchHistory && Array.isArray(data.matchHistory)) {
+            matchHistory = data.matchHistory;
+            localStorage.setItem('newaza_history', JSON.stringify(matchHistory));
+          }
+
+          if (data.dojoLeaderboard && typeof data.dojoLeaderboard === 'object') {
+            dojoLeaderboard = data.dojoLeaderboard;
+            localStorage.setItem('newaza_dojoLeaderboard', JSON.stringify(dojoLeaderboard));
+          }
+
+          if (data.categoryPlacements && typeof data.categoryPlacements === 'object') {
+            categoryPlacements = data.categoryPlacements;
+            localStorage.setItem('newaza_category_placements', JSON.stringify(categoryPlacements));
+          }
+
+          renderJudokasTable();
+          updateJudokasBadges();
+          renderMesaDojosTable();
+          updateDojosBadges();
+          updateDojoDatalist();
+          updateScoreboardDropdowns();
+          updateTournamentMatchSelector();
+          renderCategoryPoolsView();
+          renderTournamentOrderView();
+          renderRankingTable();
+          renderCategoryStandingsView();
+          renderHistoryTable();
+
+          if (data.liveMatch) {
+            applyLiveMatchFromServer(data.liveMatch);
+          }
+
+          syncTournamentStateToServer();
+          closeModal('modal-backup-manager');
+          showToast('🎉 ¡Torneo restaurado con éxito desde la copia de seguridad!', '#10b981');
+          alert(`✅ ¡Restauración Completada!\n\nSe han restaurado:\n• ${registeredJudokas.length} Judokas inscritos\n• ${mesaRegisteredDojos.length} Dojos / Clubes\n• ${matchHistory.length} Combates disputados.`);
+        } catch (err) {
+          alert('❌ Error al procesar el archivo de respaldo: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
     }
 
     function exportJudokasJSON() {
@@ -6655,6 +6800,7 @@ Dojo: Bushido
 
     function saveCategoryPlacements() {
       localStorage.setItem('newaza_category_placements', JSON.stringify(categoryPlacements));
+      syncTournamentStateToServer();
     }
 
     function switchRankingSubtab(subtab) {
@@ -7781,9 +7927,8 @@ Dojo: Bushido
       });
 
       registeredJudokas.sort(compareJudokas);
-      localStorage.setItem('newaza_judokas', JSON.stringify(registeredJudokas));
+      saveJudokas();
 
-      updateJudokasBadges();
       renderJudokasTable();
       updateScoreboardDropdowns();
       renderCategoryPoolsView();
@@ -7887,9 +8032,8 @@ Dojo: Bushido
       });
 
       registeredJudokas.sort(compareJudokas);
-      localStorage.setItem('newaza_judokas', JSON.stringify(registeredJudokas));
+      saveJudokas();
 
-      updateJudokasBadges();
       renderJudokasTable();
       updateScoreboardDropdowns();
       renderCategoryPoolsView();
@@ -8370,7 +8514,7 @@ Dojo: Bushido
 
       const payload = {
         judokas: registeredJudokas,
-        dojos: registeredDojos,
+        dojos: mesaRegisteredDojos,
         matchHistory: matchHistory,
         dojoLeaderboard: dojoLeaderboard,
         categoryPlacements: categoryPlacements,
@@ -8482,27 +8626,66 @@ Dojo: Bushido
     function applyFullTournamentStateFromServer(serverState) {
       if (!serverState) return;
 
+      // BLINDAJE DE PERSISTENCIA CONTRA REINICIOS EN NUBE:
+      // Si el servidor envía un estado vacío (porque el host en la nube se reinició o despertó),
+      // pero el cliente ya tiene atletas, historial o dojos guardados localmente:
+      // ¡NUNCA borrar el cliente! Restaurar de inmediato el servidor enviando los datos locales.
+      const hasLocalData = (registeredJudokas && registeredJudokas.length > 0) || 
+                           (mesaRegisteredDojos && mesaRegisteredDojos.length > 0) || 
+                           (matchHistory && matchHistory.length > 0);
+
+      const serverIsEmpty = (!serverState.judokas || serverState.judokas.length === 0) &&
+                            (!serverState.matchHistory || serverState.matchHistory.length === 0) &&
+                            (!serverState.dojos || serverState.dojos.length === 0);
+
+      if (serverIsEmpty && hasLocalData) {
+        console.log('🔄 Servidor en estado inicial o reiniciado. Restaurando datos desde LocalStorage hacia la nube...');
+        syncTournamentStateToServer();
+        return;
+      }
+
       if (serverState.judokas && Array.isArray(serverState.judokas)) {
-        registeredJudokas = serverState.judokas;
-        localStorage.setItem('newaza_judokas', JSON.stringify(registeredJudokas));
+        if (serverState.judokas.length > 0 || registeredJudokas.length === 0) {
+          registeredJudokas = serverState.judokas;
+          localStorage.setItem('newaza_judokas', JSON.stringify(registeredJudokas));
+        }
       }
+
       if (serverState.dojos && Array.isArray(serverState.dojos)) {
-        mesaRegisteredDojos = serverState.dojos;
-        localStorage.setItem('newaza_registered_dojos', JSON.stringify(mesaRegisteredDojos));
-        renderMesaDojosTable();
-        updateDojosBadges();
+        if (serverState.dojos.length > 0 || mesaRegisteredDojos.length === 0) {
+          // Fusionar dojos inteligentemente sin duplicar ni borrar
+          const currentMap = new Map();
+          mesaRegisteredDojos.forEach(d => { if (d && d.name) currentMap.set(d.name.toLowerCase().trim(), d); });
+          serverState.dojos.forEach(d => { 
+            if (d && d.name) {
+              const key = d.name.toLowerCase().trim();
+              currentMap.set(key, { ...(currentMap.get(key) || {}), ...d });
+            }
+          });
+          mesaRegisteredDojos = Array.from(currentMap.values());
+          localStorage.setItem('newaza_registered_dojos', JSON.stringify(mesaRegisteredDojos));
+        }
       }
+
       if (serverState.matchHistory && Array.isArray(serverState.matchHistory)) {
-        matchHistory = serverState.matchHistory;
-        localStorage.setItem('newaza_history', JSON.stringify(matchHistory));
+        if (serverState.matchHistory.length > 0 || matchHistory.length === 0) {
+          matchHistory = serverState.matchHistory;
+          localStorage.setItem('newaza_history', JSON.stringify(matchHistory));
+        }
       }
-      if (serverState.dojoLeaderboard) {
-        dojoLeaderboard = serverState.dojoLeaderboard;
-        localStorage.setItem('newaza_dojoLeaderboard', JSON.stringify(dojoLeaderboard));
+
+      if (serverState.dojoLeaderboard && typeof serverState.dojoLeaderboard === 'object') {
+        if (Object.keys(serverState.dojoLeaderboard).length > 0 || Object.keys(dojoLeaderboard).length === 0) {
+          dojoLeaderboard = serverState.dojoLeaderboard;
+          localStorage.setItem('newaza_dojoLeaderboard', JSON.stringify(dojoLeaderboard));
+        }
       }
-      if (serverState.categoryPlacements) {
-        categoryPlacements = serverState.categoryPlacements;
-        localStorage.setItem('newaza_category_placements', JSON.stringify(categoryPlacements));
+
+      if (serverState.categoryPlacements && typeof serverState.categoryPlacements === 'object') {
+        if (Object.keys(serverState.categoryPlacements).length > 0 || Object.keys(categoryPlacements).length === 0) {
+          categoryPlacements = serverState.categoryPlacements;
+          localStorage.setItem('newaza_category_placements', JSON.stringify(categoryPlacements));
+        }
       }
 
       if (serverState.version) lastServerStateVersion = serverState.version;

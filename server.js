@@ -75,6 +75,9 @@ function saveTournamentState(updates) {
     updatedAt: new Date().toISOString()
   };
   writeJsonFile(TOURNAMENT_STATE_FILE, next);
+  if (updates.dojos && Array.isArray(updates.dojos) && updates.dojos.length > 0) {
+    writeJsonFile(DOJOS_FILE, updates.dojos);
+  }
   return next;
 }
 
