@@ -42,6 +42,103 @@ function getAudioContext() {
   return audioCtx;
 }
 
+function playOsaekomiTaikoBeat(sec = 0) {
+  if (!state.soundEnabled) return;
+  try {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+
+    const playHit = (offset, baseFreq, vol, decay, isDeep = false) => {
+      const hitTime = now + offset;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = isDeep ? 'sine' : 'triangle';
+      osc.frequency.setValueAtTime(baseFreq * 1.45, hitTime);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq, hitTime + 0.03);
+      osc.frequency.exponentialRampToValueAtTime(Math.max(35, baseFreq * 0.6), hitTime + decay);
+
+      gain.gain.setValueAtTime(0.0001, hitTime);
+      gain.gain.linearRampToValueAtTime(vol, hitTime + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, hitTime + decay);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(hitTime);
+      osc.stop(hitTime + decay);
+
+      if (isDeep || vol > 0.4) {
+        const subOsc = ctx.createOscillator();
+        const subGain = ctx.createGain();
+        subOsc.type = 'sine';
+        subOsc.frequency.setValueAtTime(baseFreq * 0.75, hitTime);
+        subOsc.frequency.exponentialRampToValueAtTime(40, hitTime + decay * 0.85);
+
+        subGain.gain.setValueAtTime(0.0001, hitTime);
+        subGain.gain.linearRampToValueAtTime(vol * 0.85, hitTime + 0.01);
+        subGain.gain.exponentialRampToValueAtTime(0.0001, hitTime + decay * 1.0);
+
+        subOsc.connect(subGain);
+        subGain.connect(ctx.destination);
+        subOsc.start(hitTime);
+        subOsc.stop(hitTime + decay * 1.0);
+      }
+
+      try {
+        const snapLen = Math.floor(ctx.sampleRate * 0.03);
+        const noiseBuffer = ctx.createBuffer(1, snapLen, ctx.sampleRate);
+        const data = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < snapLen; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (snapLen * 0.25));
+        }
+        const noise = ctx.createBufferSource();
+        noise.buffer = noiseBuffer;
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(isDeep ? 750 : 1100, hitTime);
+        filter.Q.setValueAtTime(2.5, hitTime);
+
+        const noiseGain = ctx.createGain();
+        noiseGain.gain.setValueAtTime(vol * 0.5, hitTime);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, hitTime + 0.03);
+
+        noise.connect(filter);
+        filter.connect(noiseGain);
+        noiseGain.connect(ctx.destination);
+
+        noise.start(hitTime);
+        noise.stop(hitTime + 0.03);
+      } catch (e) {}
+    };
+
+    if (sec === 0) {
+      playHit(0.00, 125, 0.75, 0.32, true);
+      playHit(0.18, 145, 0.55, 0.18, false);
+      playHit(0.30, 155, 0.60, 0.18, false);
+      playHit(0.44, 130, 0.75, 0.30, true);
+      playHit(0.68, 95, 0.90, 0.85, true);
+    } else if (sec < 10) {
+      playHit(0.00, 120, 0.70, 0.30, true);
+      playHit(0.32, 145, 0.50, 0.18, false);
+      playHit(0.62, 155, 0.55, 0.18, false);
+    } else if (sec < 15) {
+      playHit(0.00, 110, 0.80, 0.32, true);
+      playHit(0.24, 150, 0.55, 0.16, false);
+      playHit(0.48, 115, 0.75, 0.26, true);
+      playHit(0.72, 160, 0.60, 0.16, false);
+    } else {
+      playHit(0.00, 100, 0.85, 0.35, true);
+      playHit(0.20, 155, 0.60, 0.15, false);
+      playHit(0.40, 105, 0.80, 0.30, true);
+      playHit(0.60, 165, 0.65, 0.15, false);
+      playHit(0.78, 175, 0.70, 0.15, false);
+    }
+  } catch (err) {
+    console.warn('Error en tambores Taiko:', err);
+  }
+}
+
 function playSound(type = 'buzzer') {
   if (!state.soundEnabled) return;
   try {
@@ -89,18 +186,155 @@ function playSound(type = 'buzzer') {
       gain.connect(ctx.destination);
       osc.start();
       osc.stop(ctx.currentTime + 0.4);
-    } else if (type === 'bell') {
-      // Campana de Hajime (Inicio)
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(880, ctx.currentTime);
-      gain.gain.setValueAtTime(0.35, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.6);
+    } else if (type === 'gong' || type === 'bell') {
+      // Auténtico Gong Tradicional de Tatami / Torneo (Hajime)
+      const now = ctx.currentTime;
+
+      // 1. Armónicos e inarmónicos metálicos con batimiento acústico y resonancia profunda
+      const gongPartials = [
+        { freq: 82.4,  gain: 0.35, decay: 2.8, type: 'sine' },      // Sub-armónico profundo
+        { freq: 164.8, gain: 0.50, decay: 2.8, type: 'sine' },      // Fundamental de gong (Mi2)
+        { freq: 167.2, gain: 0.45, decay: 2.7, type: 'triangle' },  // Batimiento acústico / shimmer metálico
+        { freq: 247.0, gain: 0.35, decay: 2.4, type: 'sine' },      // Parcial 2 (Si2)
+        { freq: 392.0, gain: 0.28, decay: 2.0, type: 'triangle' },  // Parcial 3 (Sol3)
+        { freq: 523.2, gain: 0.22, decay: 1.6, type: 'sine' },      // Parcial 4 (Do4)
+        { freq: 784.0, gain: 0.15, decay: 1.2, type: 'sine' },      // Parcial 5 brillante
+        { freq: 1175.0, gain: 0.09, decay: 0.8, type: 'sine' }      // Brillo de campana superior
+      ];
+
+      gongPartials.forEach(p => {
+        const osc = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        osc.type = p.type;
+        osc.frequency.setValueAtTime(p.freq, now);
+
+        // Suave inflexión de micro-tono típica del impacto en el centro del gong metálico
+        osc.frequency.exponentialRampToValueAtTime(p.freq * 0.985, now + p.decay);
+
+        gainNode.gain.setValueAtTime(0.0001, now);
+        gainNode.gain.linearRampToValueAtTime(p.gain, now + 0.018); // Ataque percusivo enérgico
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, now + p.decay);
+
+        osc.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + p.decay);
+      });
+
+      // 2. Golpe de mazo / Impacto transitorio percusivo inicial (Ruido metálico amortiguado)
+      try {
+        const bufferSize = Math.floor(ctx.sampleRate * 0.09);
+        const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          output[i] = Math.random() * 2 - 1;
+        }
+        const whiteNoise = ctx.createBufferSource();
+        whiteNoise.buffer = noiseBuffer;
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(700, now);
+        filter.Q.setValueAtTime(3.5, now);
+
+        const strikeGain = ctx.createGain();
+        strikeGain.gain.setValueAtTime(0.35, now);
+        strikeGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+
+        whiteNoise.connect(filter);
+        filter.connect(strikeGain);
+        strikeGain.connect(ctx.destination);
+
+        whiteNoise.start(now);
+        whiteNoise.stop(now + 0.09);
+      } catch (e) {
+        // Fallback silencioso en caso de restricciones de buffer
+      }
+    } else if (type === 'drums' || type === 'taiko' || type === 'osaekomi') {
+      // Auténtico sonido marcial de Tambores Taiko japoneses para Osaekomi (Ne-Waza)
+      const now = ctx.currentTime;
+
+      const playTaikoHit = (offset, baseFreq, vol, decay, isDeep = false) => {
+        const hitTime = now + offset;
+
+        // 1. Cuerpo principal del tambor (membrana oscilante con caída de tono)
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = isDeep ? 'sine' : 'triangle';
+        osc.frequency.setValueAtTime(baseFreq * 1.5, hitTime);
+        osc.frequency.exponentialRampToValueAtTime(baseFreq, hitTime + 0.035);
+        osc.frequency.exponentialRampToValueAtTime(Math.max(35, baseFreq * 0.6), hitTime + decay);
+
+        gain.gain.setValueAtTime(0.0001, hitTime);
+        gain.gain.linearRampToValueAtTime(vol, hitTime + 0.008);
+        gain.gain.exponentialRampToValueAtTime(0.0001, hitTime + decay);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(hitTime);
+        osc.stop(hitTime + decay);
+
+        // 2. Sub-grave profundo (resonancia de barril de madera O-Daiko)
+        if (isDeep || vol > 0.4) {
+          const subOsc = ctx.createOscillator();
+          const subGain = ctx.createGain();
+          subOsc.type = 'sine';
+          subOsc.frequency.setValueAtTime(baseFreq * 0.75, hitTime);
+          subOsc.frequency.exponentialRampToValueAtTime(42, hitTime + decay * 0.9);
+
+          subGain.gain.setValueAtTime(0.0001, hitTime);
+          subGain.gain.linearRampToValueAtTime(vol * 0.85, hitTime + 0.012);
+          subGain.gain.exponentialRampToValueAtTime(0.0001, hitTime + decay * 1.1);
+
+          subOsc.connect(subGain);
+          subGain.connect(ctx.destination);
+          subOsc.start(hitTime);
+          subOsc.stop(hitTime + decay * 1.1);
+        }
+
+        // 3. Impacto percusivo de baqueta (Bachi sobre piel de tambor)
+        try {
+          const snapLen = Math.floor(ctx.sampleRate * 0.035);
+          const noiseBuffer = ctx.createBuffer(1, snapLen, ctx.sampleRate);
+          const data = noiseBuffer.getChannelData(0);
+          for (let i = 0; i < snapLen; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (snapLen * 0.25));
+          }
+          const noise = ctx.createBufferSource();
+          noise.buffer = noiseBuffer;
+
+          const filter = ctx.createBiquadFilter();
+          filter.type = 'bandpass';
+          filter.frequency.setValueAtTime(isDeep ? 750 : 1100, hitTime);
+          filter.Q.setValueAtTime(2.5, hitTime);
+
+          const noiseGain = ctx.createGain();
+          noiseGain.gain.setValueAtTime(vol * 0.55, hitTime);
+          noiseGain.gain.exponentialRampToValueAtTime(0.001, hitTime + 0.035);
+
+          noise.connect(filter);
+          filter.connect(noiseGain);
+          noiseGain.connect(ctx.destination);
+
+          noise.start(hitTime);
+          noise.stop(hitTime + 0.035);
+        } catch (e) {}
+      };
+
+      // Patrón rítmico marcial de tambores de guerra Taiko: DON... doko-doko... ¡DON!
+      const rhythm = [
+        { t: 0.00, f: 125, v: 0.70, d: 0.30, deep: false }, // Golpe 1: DON
+        { t: 0.16, f: 145, v: 0.55, d: 0.18, deep: false }, // Golpe 2: do
+        { t: 0.28, f: 155, v: 0.60, d: 0.18, deep: false }, // Golpe 3: ko
+        { t: 0.40, f: 130, v: 0.75, d: 0.28, deep: true },  // Golpe 4: DON
+        { t: 0.55, f: 150, v: 0.60, d: 0.18, deep: false }, // Golpe 5: do
+        { t: 0.67, f: 160, v: 0.65, d: 0.18, deep: false }, // Golpe 6: ko
+        { t: 0.82, f: 90,  v: 0.95, d: 1.40, deep: true }   // Golpe 7 Final estruendoso: ¡DON!
+      ];
+
+      rhythm.forEach(hit => {
+        playTaikoHit(hit.t, hit.f, hit.v, hit.d, hit.deep);
+      });
     }
   } catch (err) {
     console.warn('Web Audio no disponible:', err);
@@ -143,7 +377,7 @@ function toggleMatchTimer() {
       btn.innerText = 'PAUSAR (Espacio)';
       btn.className = 'btn-large btn-red';
     }
-    playSound('bell');
+    playSound('gong');
 
     state.matchInterval = setInterval(() => {
       if (state.matchTimeRemaining > 0) {
@@ -174,19 +408,26 @@ function startOsaekomi(side) {
   const box = document.getElementById(`${side}-osaekomi-box`);
   if (box) box.classList.add('active');
 
+  playOsaekomiTaikoBeat(0);
+
   state.osaekomiInterval = setInterval(() => {
     state.osaekomiSeconds++;
     updateOsaekomiDisplay(side);
 
     if (state.osaekomiSeconds === 20) {
       stopOsaekomi(side, true); // Ippon alcanzado a los 20 segundos
+    } else {
+      playOsaekomiTaikoBeat(state.osaekomiSeconds);
     }
   }, 1000);
 }
 
 function stopOsaekomi(side, isIppon = false) {
   if (state.osaekomiSide !== side) return;
-  clearInterval(state.osaekomiInterval);
+  if (state.osaekomiInterval) {
+    clearInterval(state.osaekomiInterval);
+    state.osaekomiInterval = null;
+  }
 
   const sec = state.osaekomiSeconds;
   state.osaekomiSide = null;
