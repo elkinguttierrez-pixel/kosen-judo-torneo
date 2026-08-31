@@ -6082,13 +6082,25 @@ Dojo: Bushido
       }
     }
 
+    function formatSpeechPhonetics(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/\bjudokas\b/gi, 'yudokas')
+        .replace(/\bjudoka\b/gi, 'yudoka')
+        .replace(/\bjudos\b/gi, 'yudos')
+        .replace(/\bjudo\b/gi, 'yudo')
+        .replace(/\bjujitsu\b/gi, 'yuyitsu')
+        .replace(/\bjujutsu\b/gi, 'yuyutsu');
+    }
+
     function speakAnnouncement(text, rate = 1.0, pitch = 1.0) {
       if (!isVoiceAnnouncerEnabled || !('speechSynthesis' in window)) return;
 
       try {
         window.speechSynthesis.cancel(); // Cancelar cualquier locución anterior
 
-        const utterance = new SpeechSynthesisUtterance(text);
+        const phoneticText = formatSpeechPhonetics(text);
+        const utterance = new SpeechSynthesisUtterance(phoneticText);
         utterance.lang = 'es-ES';
         if (preferredSpanishVoice) utterance.voice = preferredSpanishVoice;
         utterance.rate = rate; // Velocidad de locución
