@@ -6103,13 +6103,13 @@ Dojo: Bushido
 
     function repeatCurrentPhaseVoice() {
       if (matchCallState.currentPhase === 'white') {
-        const text = `Atención tatami. Combate número ${matchCallState.matchNumber}. Se llama a la esquina blanca: ${matchCallState.white.name}, del club ${matchCallState.white.dojo}.`;
+        const text = `Al centro, con uniforme blanco: ${matchCallState.white.name}${matchCallState.white.dojo ? ', del club ' + matchCallState.white.dojo : ''}.`;
         speakAnnouncement(text, 1.0, 1.05);
       } else if (matchCallState.currentPhase === 'blue') {
-        const text = `Esquina azul: ${matchCallState.blue.name}, del club ${matchCallState.blue.dojo}.`;
+        const text = `Con uniforme azul: ${matchCallState.blue.name}${matchCallState.blue.dojo ? ', del club ' + matchCallState.blue.dojo : ''}.`;
         speakAnnouncement(text, 1.0, 0.98);
       } else if (matchCallState.currentPhase === 'versus') {
-        const text = `Combate oficial número ${matchCallState.matchNumber}. ${matchCallState.white.name}, contra ${matchCallState.blue.name}. Competidores a sus marcas para iniciar.`;
+        const text = `Al centro del tatami. Con uniforme blanco: ${matchCallState.white.name}. Con uniforme azul: ${matchCallState.blue.name}.`;
         speakAnnouncement(text, 1.02, 1.0);
       }
     }
@@ -6237,7 +6237,7 @@ Dojo: Bushido
         const pill = document.getElementById('call-corner-pill');
         if (pill) {
           pill.className = 'call-corner-pill white';
-          pill.innerHTML = '<span>⚪</span> <span>COMPETIDOR ESQUINA BLANCA (SHIRO)</span>';
+          pill.innerHTML = '<span>⚪</span> <span>AL CENTRO CON UNIFORME BLANCO</span>';
         }
 
         const nameEl = document.getElementById('call-fighter-name');
@@ -6262,7 +6262,7 @@ Dojo: Bushido
         if (btnNext) {
           btnNext.style.background = 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)';
           btnNext.style.boxShadow = '0 0 20px rgba(37,99,235,0.5)';
-          btnNext.innerHTML = '🔵 Siguiente: Llamar Esquina Azul (Ao) ▶ (Espacio)';
+          btnNext.innerHTML = '🔵 Siguiente: Con Uniforme Azul ▶ (Espacio)';
         }
 
         playSound('call_white');
@@ -6270,7 +6270,7 @@ Dojo: Bushido
         // Locución por voz del competidor blanco
         setTimeout(() => {
           if (matchCallState.currentPhase === 'white') {
-            const voiceText = `Atención tatami. Combate número ${matchCallState.matchNumber}. Se llama a la esquina blanca: ${matchCallState.white.name}, del club ${matchCallState.white.dojo}.`;
+            const voiceText = `Al centro, con uniforme blanco: ${matchCallState.white.name}${matchCallState.white.dojo ? ', del club ' + matchCallState.white.dojo : ''}.`;
             speakAnnouncement(voiceText, 1.0, 1.05);
           }
         }, 350);
@@ -6288,7 +6288,7 @@ Dojo: Bushido
         const pill = document.getElementById('call-corner-pill');
         if (pill) {
           pill.className = 'call-corner-pill blue';
-          pill.innerHTML = '<span>🔵</span> <span>COMPETIDOR ESQUINA AZUL (AO)</span>';
+          pill.innerHTML = '<span>🔵</span> <span>CON UNIFORME AZUL</span>';
         }
 
         const nameEl = document.getElementById('call-fighter-name');
@@ -6313,7 +6313,7 @@ Dojo: Bushido
         if (btnNext) {
           btnNext.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
           btnNext.style.boxShadow = '0 0 20px rgba(16,185,129,0.5)';
-          btnNext.innerHTML = '⚔️ Siguiente: Ver Cara a Cara (Versus) ▶ (Espacio)';
+          btnNext.innerHTML = '⚔️ Siguiente: Cara a Cara (Versus) ▶ (Espacio)';
         }
 
         playSound('call_blue');
@@ -6321,7 +6321,7 @@ Dojo: Bushido
         // Locución por voz del competidor azul
         setTimeout(() => {
           if (matchCallState.currentPhase === 'blue') {
-            const voiceText = `Esquina azul: ${matchCallState.blue.name}, del club ${matchCallState.blue.dojo}.`;
+            const voiceText = `Con uniforme azul: ${matchCallState.blue.name}${matchCallState.blue.dojo ? ', del club ' + matchCallState.blue.dojo : ''}.`;
             speakAnnouncement(voiceText, 1.0, 0.98);
           }
         }, 350);
@@ -6362,7 +6362,7 @@ Dojo: Bushido
         // Locución por voz del cara a cara
         setTimeout(() => {
           if (matchCallState.currentPhase === 'versus') {
-            const voiceText = `Combate número ${matchCallState.matchNumber}. ${matchCallState.white.name}, contra ${matchCallState.blue.name}. Competidores al tatami para iniciar.`;
+            const voiceText = `Al centro del tatami. Con uniforme blanco: ${matchCallState.white.name}. Con uniforme azul: ${matchCallState.blue.name}.`;
             speakAnnouncement(voiceText, 1.02, 1.0);
           }
         }, 350);
