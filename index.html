@@ -3856,6 +3856,7 @@ Dojo: Bushido
       <div class="winner-actions-row">
         <button id="btn-next-official-winner" class="btn-winner-action" style="background:#2563eb; color:#fff;" onclick="loadNextOfficialFromWinnerScreen()">⚡ Siguiente Combate Oficial ▶</button>
         <button id="btn-finish-tournament-winner" class="btn-winner-action" style="display:none; background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color:#000; font-weight:900; box-shadow:0 0 20px rgba(245,158,11,0.6);" onclick="openTournamentFinishedOverlay()">🏆 ¡FIN DEL TORNEO! VER CLAUSURA ▶</button>
+        <button class="btn-winner-action" style="background:rgba(245, 158, 11, 0.2); border:1px solid var(--gold); color:var(--gold); font-weight:800;" onclick="repeatCurrentWinnerVoice()" title="Volver a escuchar el anuncio del ganador por voz (Tecla V)">🔊 Repetir Voz (V)</button>
         <button class="btn-winner-action" style="background:var(--panel-dark); border:1px solid var(--panel-border); color:#fff;" onclick="viewLeaderboardFromWinnerScreen()">🏆 Ver Tabla de Dojos</button>
         <button class="btn-winner-action" style="background:transparent; border:1px solid rgba(255,255,255,0.3); color:var(--slate-300);" onclick="closeFullscreenWinner()">✕ Volver al Tablero</button>
       </div>
@@ -7015,6 +7016,14 @@ Dojo: Bushido
       syncTournamentStateToServer();
     }
 
+    let lastWinnerVoiceText = '';
+
+    function repeatCurrentWinnerVoice() {
+      if (lastWinnerVoiceText) {
+        speakAnnouncement(lastWinnerVoiceText, 1.0, 1.02);
+      }
+    }
+
     function showFullscreenWinner(winnerData) {
       const overlay = document.getElementById('fullscreen-winner-overlay');
       const heroBox = document.getElementById('winner-hero-box');
@@ -7028,26 +7037,32 @@ Dojo: Bushido
 
       heroBox.className = 'winner-card-hero';
 
+      let winnerVoiceText = '';
+
       if (winnerData.result === 'white') {
         heroBox.classList.add('winner-white');
         cornerBadge.className = 'winner-corner-pill white-corner';
         cornerBadge.innerText = '⚪ 1ER JUDOKA • ESQUINA BLANCA (SHIRO)';
         nameText.innerText = winnerData.whiteName.toUpperCase();
         dojoText.innerHTML = `🥋 ${escapeHtml(winnerData.whiteDojo)}`;
+        winnerVoiceText = `¡Ganador del combate, con uniforme blanco: ${winnerData.whiteName}${winnerData.whiteDojo ? ', del club ' + winnerData.whiteDojo : ''}${winnerData.reason ? '. Por ' + winnerData.reason : ''}!`;
       } else if (winnerData.result === 'blue') {
         heroBox.classList.add('winner-blue');
         cornerBadge.className = 'winner-corner-pill blue-corner';
         cornerBadge.innerText = '🔵 2DO JUDOKA • ESQUINA AZUL (AO)';
         nameText.innerText = winnerData.blueName.toUpperCase();
         dojoText.innerHTML = `🥋 ${escapeHtml(winnerData.blueDojo)}`;
+        winnerVoiceText = `¡Ganador del combate, con uniforme azul: ${winnerData.blueName}${winnerData.blueDojo ? ', del club ' + winnerData.blueDojo : ''}${winnerData.reason ? '. Por ' + winnerData.reason : ''}!`;
       } else {
         heroBox.classList.add('winner-draw');
         cornerBadge.className = 'winner-corner-pill draw-corner';
         cornerBadge.innerText = '🤝 EMPATE REGLAMENTARIO (HIKIWAKE)';
         nameText.innerText = 'EMPATE TÉCNICO';
         dojoText.innerHTML = `🥋 ${escapeHtml(winnerData.whiteDojo)} vs ${escapeHtml(winnerData.blueDojo)}`;
+        winnerVoiceText = `¡Resultado final del combate: Empate técnico reglamentario!`;
       }
 
+      lastWinnerVoiceText = winnerVoiceText;
       reasonText.innerText = winnerData.reason;
       scoreText.innerText = `⚪ Blanco (${winnerData.whiteScore})  vs  🔵 Azul (${winnerData.blueScore})`;
 
@@ -7066,9 +7081,17 @@ Dojo: Bushido
 
       overlay.style.display = 'flex';
       playSound('ippon');
+
+      // Proclamar ganador por voz tras la fanfarria de Ippon
+      setTimeout(() => {
+        if (overlay.style.display === 'flex' && lastWinnerVoiceText) {
+          speakAnnouncement(lastWinnerVoiceText, 1.0, 1.02);
+        }
+      }, 550);
     }
 
     function closeFullscreenWinner() {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       const overlay = document.getElementById('fullscreen-winner-overlay');
       if (overlay) overlay.style.display = 'none';
       const progress = getTournamentProgressStats();
@@ -7080,6 +7103,7 @@ Dojo: Bushido
     }
 
     function loadNextOfficialFromWinnerScreen() {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       const overlay = document.getElementById('fullscreen-winner-overlay');
       if (overlay) overlay.style.display = 'none';
       loadNextOfficialPair();
@@ -8238,7 +8262,26 @@ Dojo: Bushido
       const callOverlay = document.getElementById('fullscreen-match-call-overlay');
       const isCallOverlayOpen = callOverlay && callOverlay.style.display === 'flex';
 
+      const winnerOverlay = document.getElementById('fullscreen-winner-overlay');
+      const isWinnerOverlayOpen = winnerOverlay && winnerOverlay.style.display === 'flex';
+
       const key = e.key.toLowerCase();
+
+      // Atajos cuando la pantalla de ganador está activa
+      if (isWinnerOverlayOpen) {
+        if (e.code === 'Space' || e.code === 'Enter') {
+          e.preventDefault();
+          closeFullscreenWinner();
+          return;
+        } else if (e.code === 'Escape') {
+          e.preventDefault();
+          closeFullscreenWinner();
+          return;
+        } else if (key === 'v') {
+          repeatCurrentWinnerVoice();
+          return;
+        }
+      }
 
       // Atajos cuando la pantalla de llamado está activa
       if (isCallOverlayOpen) {
