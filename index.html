@@ -3681,7 +3681,18 @@ Dojo: Bushido
           </div>
         </div>
 
-        <div style="display:flex; align-items:center; gap:8px; margin-left:auto;">
+        <div style="display:flex; align-items:center; gap:8px; margin-left:auto; flex-wrap:wrap;">
+          <!-- SELECTOR DINÁMICO DE VOCES -->
+          <div style="display:flex; align-items:center; gap:6px; background:rgba(0,0,0,0.5); padding:4px 10px; border-radius:12px; border:1px solid rgba(255,255,255,0.18);">
+            <span style="font-size:11px; font-weight:800; color:var(--gold);">🎙️ Voz:</span>
+            <select id="select-tournament-voice" style="background:#0f172a; color:#fff; border:1px solid #334155; font-size:11px; font-weight:700; padding:4px 8px; border-radius:6px; max-width:220px; cursor:pointer;" onchange="onVoiceSelected(this.value)" title="Elige la voz del locutor del torneo">
+              <option value="">Cargando voces...</option>
+            </select>
+            <button class="btn-action" style="padding:4px 8px; font-size:11px; font-weight:800; background:#2563eb; color:#fff; border:none;" onclick="testSelectedVoice()" title="Escuchar una prueba de la voz seleccionada">
+              ▶ Probar
+            </button>
+          </div>
+
           <button id="btn-toggle-voice-announcer" class="btn-action" style="background:rgba(16, 185, 129, 0.2); color:#34d399; border:1px solid #10b981; font-weight:800; font-size:11px; padding:5px 12px;" onclick="toggleVoiceAnnouncer()" title="Activar o desactivar locución automática por altavoz">
             🗣️ Voz: ACTIVA
           </button>
@@ -6054,17 +6065,98 @@ Dojo: Bushido
       if (!('speechSynthesis' in window)) return;
 
       const updateVoices = () => {
-        const voices = window.speechSynthesis.getVoices();
-        if (!voices || voices.length === 0) return;
-        preferredSpanishVoice = voices.find(v => v.lang && v.lang.startsWith('es') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Online') || v.name.includes('Paulina') || v.name.includes('Sabina') || v.name.includes('Jorge') || v.name.includes('Helena'))) ||
-                                voices.find(v => v.lang && v.lang.startsWith('es')) ||
-                                voices[0];
+        populateVoiceSelector();
       };
 
       updateVoices();
       if (window.speechSynthesis.onvoiceschanged !== undefined) {
         window.speechSynthesis.onvoiceschanged = updateVoices;
       }
+    }
+
+    function populateVoiceSelector() {
+      if (!('speechSynthesis' in window)) return;
+      const select = document.getElementById('select-tournament-voice');
+
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices || voices.length === 0) return;
+
+      const savedVoiceURI = localStorage.getItem('kosen_preferred_voice_uri') || '';
+
+      if (select) {
+        select.innerHTML = '';
+
+        // Separar voces en español y otros idiomas
+        const esVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('es'));
+        const otherVoices = voices.filter(v => !v.lang || !v.lang.toLowerCase().startsWith('es'));
+
+        const esGroup = document.createElement('optgroup');
+        esGroup.label = '🇪🇸 Voces en Español (Recomendadas)';
+
+        esVoices.forEach(v => {
+          const opt = document.createElement('option');
+          opt.value = v.voiceURI || v.name;
+          let flag = '🌎';
+          const lang = v.lang.toLowerCase();
+          if (lang.includes('es-es') || lang.includes('spain')) flag = '🇪🇸';
+          else if (lang.includes('es-mx') || lang.includes('mexico')) flag = '🇲🇽';
+          else if (lang.includes('es-co') || lang.includes('colombia')) flag = '🇨🇴';
+          else if (lang.includes('es-us') || lang.includes('united states')) flag = '🇺🇸';
+          else if (lang.includes('es-ar') || lang.includes('argentina')) flag = '🇦🇷';
+
+          const isNatural = v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Online');
+          opt.textContent = `${flag} ${v.name} ${isNatural ? '✨ (Natural)' : ''}`;
+          esGroup.appendChild(opt);
+        });
+
+        if (esGroup.children.length > 0) {
+          select.appendChild(esGroup);
+        }
+
+        if (otherVoices.length > 0) {
+          const otherGroup = document.createElement('optgroup');
+          otherGroup.label = '🌐 Otras Voces del Sistema';
+          otherVoices.forEach(v => {
+            const opt = document.createElement('option');
+            opt.value = v.voiceURI || v.name;
+            opt.textContent = `${v.name} (${v.lang})`;
+            otherGroup.appendChild(opt);
+          });
+          select.appendChild(otherGroup);
+        }
+      }
+
+      // Seleccionar voz guardada o la mejor disponible por defecto
+      const esVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('es'));
+      if (savedVoiceURI && voices.some(v => (v.voiceURI || v.name) === savedVoiceURI)) {
+        preferredSpanishVoice = voices.find(v => (v.voiceURI || v.name) === savedVoiceURI);
+      } else {
+        // Priorizar voces naturales en español
+        preferredSpanishVoice = esVoices.find(v => (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Online')) && (v.lang.includes('MX') || v.lang.includes('CO') || v.lang.includes('ES'))) ||
+                                esVoices.find(v => v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Online')) ||
+                                esVoices.find(v => v.name.includes('Paulina') || v.name.includes('Sabina') || v.name.includes('Jorge') || v.name.includes('Helena')) ||
+                                esVoices[0] ||
+                                voices[0];
+      }
+
+      if (select && preferredSpanishVoice) {
+        select.value = preferredSpanishVoice.voiceURI || preferredSpanishVoice.name;
+      }
+    }
+
+    function onVoiceSelected(voiceIdentifier) {
+      if (!('speechSynthesis' in window)) return;
+      const voices = window.speechSynthesis.getVoices();
+      const voice = voices.find(v => (v.voiceURI || v.name) === voiceIdentifier);
+      if (voice) {
+        preferredSpanishVoice = voice;
+        localStorage.setItem('kosen_preferred_voice_uri', voice.voiceURI || voice.name);
+        showToast(`🎙️ Voz activada: ${voice.name}`, '#2563eb');
+      }
+    }
+
+    function testSelectedVoice() {
+      speakAnnouncement("Al centro, con uniforme blanco: Yudoka Mateo. Con uniforme azul: Yudoka Elkin.", 1.0, 1.0);
     }
 
     function toggleVoiceAnnouncer() {
