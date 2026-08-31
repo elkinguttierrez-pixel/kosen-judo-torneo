@@ -3672,11 +3672,22 @@ Dojo: Bushido
     <div class="call-card-hero" id="call-hero-box">
       
       <!-- LOGO Y ENCABEZADO OFICIAL -->
-      <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-        <img src="heikegani.jpg" alt="Heikegani Samurai Crest" style="width:48px; height:48px; border-radius:10px; border:2px solid var(--gold); object-fit:contain; background:#080c14; box-shadow:0 0 16px rgba(245,158,11,0.5);">
-        <div style="text-align:left;">
-          <div style="font-size:13px; font-weight:900; color:var(--gold); letter-spacing:2px;">KOSEN JUDO HEIKEGANI</div>
-          <div style="font-size:11px; color:#cbd5e1; font-weight:700;" id="call-overlay-subtitle">MESA TÉCNICA • LLAMADO AL TATAMI</div>
+      <div style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:12px; margin-bottom:12px; flex-wrap:wrap;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <img src="heikegani.jpg" alt="Heikegani Samurai Crest" style="width:48px; height:48px; border-radius:10px; border:2px solid var(--gold); object-fit:contain; background:#080c14; box-shadow:0 0 16px rgba(245,158,11,0.5);">
+          <div style="text-align:left;">
+            <div style="font-size:13px; font-weight:900; color:var(--gold); letter-spacing:2px;">KOSEN JUDO HEIKEGANI</div>
+            <div style="font-size:11px; color:#cbd5e1; font-weight:700;" id="call-overlay-subtitle">MESA TÉCNICA • LLAMADO AL TATAMI</div>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px; margin-left:auto;">
+          <button id="btn-toggle-voice-announcer" class="btn-action" style="background:rgba(16, 185, 129, 0.2); color:#34d399; border:1px solid #10b981; font-weight:800; font-size:11px; padding:5px 12px;" onclick="toggleVoiceAnnouncer()" title="Activar o desactivar locución automática por altavoz">
+            🗣️ Voz: ACTIVA
+          </button>
+          <button class="btn-action" style="background:rgba(245, 158, 11, 0.2); color:var(--gold); border:1px solid var(--gold); font-weight:800; font-size:11px; padding:5px 12px;" onclick="repeatCurrentPhaseVoice()" title="Volver a escuchar el llamado por voz (Tecla V)">
+            🔊 Repetir Voz (V)
+          </button>
         </div>
       </div>
 
@@ -6023,8 +6034,11 @@ Dojo: Bushido
     }
 
     // ==========================================
-    // SISTEMA OFICIAL DE LLAMADO AL TATAMI (BLANCO -> AZUL -> VERSUS)
+    // SISTEMA OFICIAL DE LLAMADO AL TATAMI (CON LOCUTOR POR VOZ)
     // ==========================================
+    let isVoiceAnnouncerEnabled = true;
+    let preferredSpanishVoice = null;
+
     let matchCallState = {
       white: { id: null, name: 'Judoka Blanco', dojo: 'Dojo Shiro', belt: 'Blanco', weight: '60 kg', category: 'General', time: '2:00 min' },
       blue: { id: null, name: 'Judoka Azul', dojo: 'Dojo Ao', belt: 'Azul', weight: '60 kg', category: 'General', time: '2:00 min' },
@@ -6036,8 +6050,73 @@ Dojo: Bushido
       currentPhase: 'white' // 'white' | 'blue' | 'versus'
     };
 
+    function initSpeechSynthesisVoice() {
+      if (!('speechSynthesis' in window)) return;
+
+      const updateVoices = () => {
+        const voices = window.speechSynthesis.getVoices();
+        if (!voices || voices.length === 0) return;
+        preferredSpanishVoice = voices.find(v => v.lang && v.lang.startsWith('es') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Online') || v.name.includes('Paulina') || v.name.includes('Sabina') || v.name.includes('Jorge') || v.name.includes('Helena'))) ||
+                                voices.find(v => v.lang && v.lang.startsWith('es')) ||
+                                voices[0];
+      };
+
+      updateVoices();
+      if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = updateVoices;
+      }
+    }
+
+    function toggleVoiceAnnouncer() {
+      isVoiceAnnouncerEnabled = !isVoiceAnnouncerEnabled;
+      const btn = document.getElementById('btn-toggle-voice-announcer');
+      if (btn) {
+        btn.innerText = isVoiceAnnouncerEnabled ? '🗣️ Voz: ACTIVA' : '🔇 Voz: SILENCIO';
+        btn.style.background = isVoiceAnnouncerEnabled ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)';
+        btn.style.color = isVoiceAnnouncerEnabled ? '#34d399' : '#f87171';
+        btn.style.borderColor = isVoiceAnnouncerEnabled ? '#10b981' : '#ef4444';
+      }
+      showToast(isVoiceAnnouncerEnabled ? '🗣️ Locutor de voz del torneo ACTIVADO' : '🔇 Locutor de voz SILENCIADO', isVoiceAnnouncerEnabled ? '#10b981' : '#64748b');
+      if (!isVoiceAnnouncerEnabled && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    function speakAnnouncement(text, rate = 1.0, pitch = 1.0) {
+      if (!isVoiceAnnouncerEnabled || !('speechSynthesis' in window)) return;
+
+      try {
+        window.speechSynthesis.cancel(); // Cancelar cualquier locución anterior
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'es-ES';
+        if (preferredSpanishVoice) utterance.voice = preferredSpanishVoice;
+        utterance.rate = rate; // Velocidad de locución
+        utterance.pitch = pitch; // Tono
+        utterance.volume = 1.0;
+
+        window.speechSynthesis.speak(utterance);
+      } catch (err) {
+        console.warn('Speech synthesis no disponible:', err);
+      }
+    }
+
+    function repeatCurrentPhaseVoice() {
+      if (matchCallState.currentPhase === 'white') {
+        const text = `Atención tatami. Combate número ${matchCallState.matchNumber}. Se llama a la esquina blanca: ${matchCallState.white.name}, del club ${matchCallState.white.dojo}.`;
+        speakAnnouncement(text, 1.0, 1.05);
+      } else if (matchCallState.currentPhase === 'blue') {
+        const text = `Esquina azul: ${matchCallState.blue.name}, del club ${matchCallState.blue.dojo}.`;
+        speakAnnouncement(text, 1.0, 0.98);
+      } else if (matchCallState.currentPhase === 'versus') {
+        const text = `Combate oficial número ${matchCallState.matchNumber}. ${matchCallState.white.name}, contra ${matchCallState.blue.name}. Competidores a sus marcas para iniciar.`;
+        speakAnnouncement(text, 1.02, 1.0);
+      }
+    }
+
     function openMatchCallOverlay(matchData) {
       if (!matchData) return;
+      initSpeechSynthesisVoice();
 
       const whiteJudoka = (typeof matchData.white === 'object') ? matchData.white : (registeredJudokas.find(j => j.id === matchData.white) || { name: 'Judoka Blanco', dojo: 'Dojo Shiro' });
       const blueJudoka = (typeof matchData.blue === 'object') ? matchData.blue : (registeredJudokas.find(j => j.id === matchData.blue) || { name: 'Judoka Azul', dojo: 'Dojo Ao' });
@@ -6188,6 +6267,14 @@ Dojo: Bushido
 
         playSound('call_white');
 
+        // Locución por voz del competidor blanco
+        setTimeout(() => {
+          if (matchCallState.currentPhase === 'white') {
+            const voiceText = `Atención tatami. Combate número ${matchCallState.matchNumber}. Se llama a la esquina blanca: ${matchCallState.white.name}, del club ${matchCallState.white.dojo}.`;
+            speakAnnouncement(voiceText, 1.0, 1.05);
+          }
+        }, 350);
+
       } else if (phase === 'blue') {
         if (singleView) singleView.style.display = 'flex';
         if (versusView) versusView.style.display = 'none';
@@ -6231,6 +6318,14 @@ Dojo: Bushido
 
         playSound('call_blue');
 
+        // Locución por voz del competidor azul
+        setTimeout(() => {
+          if (matchCallState.currentPhase === 'blue') {
+            const voiceText = `Esquina azul: ${matchCallState.blue.name}, del club ${matchCallState.blue.dojo}.`;
+            speakAnnouncement(voiceText, 1.0, 0.98);
+          }
+        }, 350);
+
       } else if (phase === 'versus') {
         if (singleView) singleView.style.display = 'none';
         if (versusView) versusView.style.display = 'flex';
@@ -6263,6 +6358,14 @@ Dojo: Bushido
         if (timeBadge) timeBadge.innerText = `⏱️ ${matchCallState.timeFormatted}`;
 
         playSound('bell');
+
+        // Locución por voz del cara a cara
+        setTimeout(() => {
+          if (matchCallState.currentPhase === 'versus') {
+            const voiceText = `Combate número ${matchCallState.matchNumber}. ${matchCallState.white.name}, contra ${matchCallState.blue.name}. Competidores al tatami para iniciar.`;
+            speakAnnouncement(voiceText, 1.02, 1.0);
+          }
+        }, 350);
       }
     }
 
@@ -6277,6 +6380,7 @@ Dojo: Bushido
     }
 
     function startMatchFromCallOverlay() {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       closeMatchCallOverlay();
       switchTab('scoreboard');
       showToast(`🥋 ¡Combate #${matchCallState.matchNumber} en tatami! ${matchCallState.white.name} vs ${matchCallState.blue.name}`, '#10b981');
@@ -6284,6 +6388,7 @@ Dojo: Bushido
     }
 
     function closeMatchCallOverlay() {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       const overlay = document.getElementById('fullscreen-match-call-overlay');
       if (overlay) overlay.style.display = 'none';
     }
@@ -8041,6 +8146,9 @@ Dojo: Bushido
           e.preventDefault();
           closeMatchCallOverlay();
           return;
+        } else if (key === 'v') {
+          repeatCurrentPhaseVoice();
+          return;
         } else if (key === '1') {
           setMatchCallPhase('white');
           return;
@@ -9367,6 +9475,7 @@ Dojo: Bushido
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      initSpeechSynthesisVoice();
       loadMesaDojosList();
       updateAutoInscribeButton();
       onCategorySelectorChange();
