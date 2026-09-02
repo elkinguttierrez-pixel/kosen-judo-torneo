@@ -659,9 +659,12 @@
                 <span class="dojo-key-badge">Clave: ${escapeHtml(d.clave)}</span>
               </div>
             </div>
-            <div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
               <button class="btn-card-postular" onclick="goToPostulacion('${d.id}')">
                 📲 Ir a Postular
+              </button>
+              <button class="btn-card-postular" style="background:#1e293b; border:1px solid var(--slate-600); color:#93c5fd;" onclick="goToMesa()">
+                💻 Mesa Técnica
               </button>
             </div>
           </div>
@@ -669,6 +672,10 @@
       });
 
       container.innerHTML = html;
+    }
+
+    function goToMesa() {
+      window.location.href = 'index.html';
     }
 
     function onSelectExistingDojoChange(dojoId) {

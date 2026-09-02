@@ -466,7 +466,8 @@ const server = http.createServer((req, res) => {
         success: true, 
         message: 'Dojo registrado con éxito',
         dojo,
-        directUrl: `http://${localIp}:${PORT}/postulacion.html?dojoId=${encodeURIComponent(dojo.id)}&key=${encodeURIComponent(dojo.clave)}`
+        directUrl: `http://${localIp}:${PORT}/postulacion.html?dojoId=${encodeURIComponent(dojo.id)}&key=${encodeURIComponent(dojo.clave)}`,
+        mesaUrl: `http://${localIp}:${PORT}/index.html`
       }));
     });
     return;
