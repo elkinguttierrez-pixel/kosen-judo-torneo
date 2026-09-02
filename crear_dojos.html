@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Crear Dojos & Generar Claves | Torneo KOSEN JUDO HEIKEGANI</title>
   <link rel="icon" type="image/jpeg" href="heikegani.jpg">
+  <script src="qrcode.min.js"></script>
   <style>
     :root {
       --bg-dark: #090d16;
@@ -478,6 +479,44 @@
       </p>
     </div>
 
+    <!-- TARJETA DEL CÓDIGO QR OFICIAL PARA CREAR DOJOS -->
+    <div class="card-panel" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:24px 20px; border:2px solid var(--gold); background:linear-gradient(180deg, #131d2e 0%, #090d16 100%);">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+        <img src="heikegani.jpg" alt="Logo Kosen Judo" style="width:42px; height:42px; border-radius:10px; border:2px solid var(--gold); object-fit:contain;">
+        <div style="text-align:left;">
+          <div style="font-size:15px; font-weight:900; color:var(--gold); letter-spacing:1px;">KOSEN JUDO HEIKEGANI</div>
+          <div style="font-size:11px; color:#cbd5e1; font-weight:700;">QR OFICIAL • CREACIÓN Y REGISTRO DE DOJOS</div>
+        </div>
+      </div>
+
+      <div style="font-size:14px; font-weight:800; color:#fff; margin-bottom:4px;">
+        📲 ESCANEA CON TU CELULAR PARA REGISTRAR TU DOJO
+      </div>
+      <div style="font-size:12px; color:var(--slate-400); margin-bottom:14px;">
+        Comparte este código QR con los Senseis y Delegados para que creen su Dojo y generen su clave desde su celular
+      </div>
+
+      <div id="crear-dojo-qr-container" style="background:#ffffff; padding:14px; border-radius:14px; box-shadow:0 8px 30px rgba(0,0,0,0.6); margin-bottom:12px; display:inline-block;">
+        <!-- Canvas QR generado dinámicamente -->
+      </div>
+
+      <div id="crear-dojo-qr-url" style="font-size:12px; color:var(--gold); font-family:monospace; font-weight:bold; word-break:break-all; background:rgba(0,0,0,0.5); padding:6px 14px; border-radius:6px; margin-bottom:14px; max-width:100%;">
+        crear_dojos.html
+      </div>
+
+      <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+        <button type="button" class="btn-header" onclick="downloadCrearDojoQrPng()" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color:#000; font-weight:900; border:none;">
+          📥 Descargar QR (PNG)
+        </button>
+        <button type="button" class="btn-header" onclick="shareCrearDojoWhatsApp()" style="background:#25D366; color:#fff; border:none; font-weight:bold;">
+          📲 Enviar por WhatsApp
+        </button>
+        <button type="button" class="btn-header" onclick="copyCrearDojoLink()">
+          📋 Copiar Enlace
+        </button>
+      </div>
+    </div>
+
     <!-- GRID PRINCIPAL: FORMULARIO + LISTA DESPLEGABLE DE DOJOS -->
     <div class="main-grid">
       
@@ -790,9 +829,122 @@
       }, 3000);
     }
 
+    let detectedServerIp = '192.168.40.229';
+    let detectedServerPort = 8080;
+    let currentCrearDojoQrInstance = null;
+
+    function getCrearDojoUrl() {
+      if (window.location.protocol.startsWith('http')) {
+        const host = window.location.hostname;
+        const port = window.location.port ? `:${window.location.port}` : '';
+        if (host === 'localhost' || host === '127.0.0.1') {
+          return `http://${detectedServerIp}${port || ':8080'}/crear_dojos.html`;
+        }
+        return `${window.location.origin}/crear_dojos.html`;
+      }
+      return `http://${detectedServerIp}:8080/crear_dojos.html`;
+    }
+
+    function renderCrearDojoQr() {
+      const container = document.getElementById('crear-dojo-qr-container');
+      const urlDisplay = document.getElementById('crear-dojo-qr-url');
+      if (!container || typeof QRCode === 'undefined') return;
+
+      const url = getCrearDojoUrl();
+      if (urlDisplay) urlDisplay.innerText = url;
+
+      container.innerHTML = '';
+      try {
+        currentCrearDojoQrInstance = new QRCode(container, {
+          text: url,
+          width: 220,
+          height: 220,
+          colorDark: "#090d16",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      } catch (err) {
+        console.warn('Error generando QR de Dojos:', err);
+      }
+    }
+
+    function downloadCrearDojoQrPng() {
+      const container = document.getElementById('crear-dojo-qr-container');
+      if (!container) return;
+      const canvas = container.querySelector('canvas');
+      const img = container.querySelector('img');
+
+      let dataUrl = null;
+      if (canvas) {
+        dataUrl = canvas.toDataURL("image/png");
+      } else if (img && img.src) {
+        dataUrl = img.src;
+      }
+
+      if (!dataUrl) {
+        alert('No se pudo generar la imagen del código QR.');
+        return;
+      }
+
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = `QR_Registro_Dojos_Kosen_Judo.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast('📥 Código QR descargado en alta definición (PNG).');
+    }
+
+    function copyCrearDojoLink() {
+      const url = getCrearDojoUrl();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(() => {
+          showToast('📋 ¡Enlace copiado al portapapeles!');
+          alert('📋 ¡Enlace copiado al portapapeles!\n\n' + url);
+        }).catch(() => {
+          prompt('Copia el enlace manualmente:', url);
+        });
+      } else {
+        prompt('Copia el enlace:', url);
+      }
+    }
+
+    function shareCrearDojoWhatsApp() {
+      const url = getCrearDojoUrl();
+      let msg = `🥋 *REGISTRO OFICIAL DE DOJOS - TORNEO KOSEN JUDO HEIKEGANI*\n\n`;
+      msg += `Estimados Senseis y Delegados:\n`;
+      msg += `Ya se encuentra habilitado el *Portal Oficial de Creación y Registro de Dojos* para el Torneo Ne-Waza Heikegani.\n\n`;
+      msg += `🏢 *Enlace Oficial para Crear tu Dojo:* \n${url}\n\n`;
+      msg += `📌 *Pasos:* \n`;
+      msg += `1. Registra el nombre de tu Dojo y Sensei responsable.\n`;
+      msg += `2. Obtén o asigna tu Clave Oficial de Acceso.\n`;
+      msg += `3. Ingresa a postular a tus atletas con tu clave.\n\n`;
+      msg += `_Mesa Técnica Oficial Kosen Judo Heikegani_ ⚡`;
+
+      const encoded = encodeURIComponent(msg);
+      window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank');
+    }
+
+    function initServerInfo() {
+      if (window.location.protocol.startsWith('http')) {
+        fetch('/api/info')
+          .then(r => r.json())
+          .then(info => {
+            if (info && info.ip) {
+              detectedServerIp = info.ip;
+              detectedServerPort = info.port || 8080;
+              renderCrearDojoQr();
+            }
+          })
+          .catch(() => {});
+      }
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       generateRandomKey();
       loadDojosList();
+      initServerInfo();
+      renderCrearDojoQr();
       initLiveSync();
     });
   </script>

@@ -789,11 +789,68 @@ const DEMO_50_JUDOKAS = [
 
     function copyMesaModalDojoUrl() {
       if (!currentMesaModalDojo) return;
+      if (currentMesaModalDojo.id === 'crear_dojos') {
+        const host = (window.location.protocol.startsWith('http') && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1')
+          ? window.location.origin
+          : `http://${detectedServerIp}:${detectedServerPort || 8080}`;
+        const url = `${host}/crear_dojos.html`;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(() => {
+            showToast('📋 ¡Enlace copiado al portapapeles!');
+          });
+        } else {
+          prompt('Copia el enlace:', url);
+        }
+        return;
+      }
       copyDojoDirectUrl(currentMesaModalDojo.id, currentMesaModalDojo.clave, currentMesaModalDojo.name);
     }
 
     function closeMesaDojoQrModal() {
       document.getElementById('modal-mesa-dojo-qr').style.display = 'none';
+    }
+
+    function openCrearDojosQrModal() {
+      const host = (window.location.protocol.startsWith('http') && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1')
+        ? window.location.origin
+        : `http://${detectedServerIp}:${detectedServerPort || 8080}`;
+      const directUrl = `${host}/crear_dojos.html`;
+
+      document.getElementById('mesa-modal-qr-dojo-name').innerText = "🏢 Registro Oficial de Dojos";
+      document.getElementById('mesa-modal-qr-sensei-name').innerText = "Portal para Senseis y Delegados • Registro de Clubes y Claves";
+      document.getElementById('mesa-modal-qr-key').innerText = "CONVOCATORIA";
+      document.getElementById('mesa-modal-qr-url-text').innerText = directUrl;
+
+      const container = document.getElementById('mesa-modal-qr-canvas-container');
+      container.innerHTML = '';
+      if (typeof QRCode !== 'undefined') {
+        try {
+          new QRCode(container, {
+            text: directUrl,
+            width: 200,
+            height: 200,
+            colorDark: "#090d16",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+          });
+        } catch (e) {
+          console.warn('Error generando QR de Dojos:', e);
+        }
+      }
+
+      currentMesaModalDojo = { id: 'crear_dojos', clave: 'REGISTRO', name: 'Crear Dojos' };
+
+      document.getElementById('mesa-btn-modal-whatsapp').onclick = () => {
+        let msg = `🥋 *CONVOCATORIA OFICIAL - TORNEO KOSEN JUDO HEIKEGANI*\n\n`;
+        msg += `Estimados Senseis y Delegados:\n`;
+        msg += `Ya se encuentra habilitado el *Portal Oficial para Crear y Registrar Dojos* para el Torneo Ne-Waza Heikegani.\n\n`;
+        msg += `🏢 *Enlace Oficial para Registrar tu Dojo:* \n${directUrl}\n\n`;
+        msg += `_Mesa Técnica Oficial Kosen Judo Heikegani_ ⚡`;
+        const encoded = encodeURIComponent(msg);
+        window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank');
+      };
+
+      document.getElementById('modal-mesa-dojo-qr').style.display = 'flex';
     }
 
     // ==========================================
