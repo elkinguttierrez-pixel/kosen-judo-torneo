@@ -121,96 +121,115 @@ const DEMO_50_JUDOKAS = [
       try {
         const ctx = getAudioContext();
         if (!ctx) return;
+        if (ctx.state === 'suspended') ctx.resume();
         const now = ctx.currentTime;
+
+        // Bus maestro con compresor dinámico para evitar cualquier saturación o distorsión digital
+        const masterBus = ctx.createGain();
+        masterBus.gain.setValueAtTime(0.60, now);
+
+        const compressor = ctx.createDynamicsCompressor();
+        compressor.threshold.setValueAtTime(-10, now);
+        compressor.knee.setValueAtTime(12, now);
+        compressor.ratio.setValueAtTime(10, now);
+        compressor.attack.setValueAtTime(0.002, now);
+        compressor.release.setValueAtTime(0.12, now);
+
+        masterBus.connect(compressor);
+        compressor.connect(ctx.destination);
 
         const playHit = (offset, baseFreq, vol, decay, isDeep = false) => {
           const hitTime = now + offset;
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = isDeep ? 'sine' : 'triangle';
-          osc.frequency.setValueAtTime(baseFreq * 1.45, hitTime);
-          osc.frequency.exponentialRampToValueAtTime(baseFreq, hitTime + 0.03);
-          osc.frequency.exponentialRampToValueAtTime(Math.max(35, baseFreq * 0.6), hitTime + decay);
+          
+          // Caída de tono percusivo rápida característica del parche de cuero Taiko
+          osc.frequency.setValueAtTime(baseFreq * 1.5, hitTime);
+          osc.frequency.exponentialRampToValueAtTime(baseFreq, hitTime + 0.025);
+          osc.frequency.exponentialRampToValueAtTime(Math.max(38, baseFreq * 0.65), hitTime + decay);
 
           gain.gain.setValueAtTime(0.0001, hitTime);
-          gain.gain.linearRampToValueAtTime(vol, hitTime + 0.008);
+          gain.gain.linearRampToValueAtTime(vol, hitTime + 0.006);
           gain.gain.exponentialRampToValueAtTime(0.0001, hitTime + decay);
 
           osc.connect(gain);
-          gain.connect(ctx.destination);
+          gain.connect(masterBus);
           osc.start(hitTime);
           osc.stop(hitTime + decay);
 
-          if (isDeep || vol > 0.4) {
+          // Resonancia acústica profunda del cuerpo de madera maciza (O-Daiko)
+          if (isDeep || vol > 0.35) {
             const subOsc = ctx.createOscillator();
             const subGain = ctx.createGain();
             subOsc.type = 'sine';
             subOsc.frequency.setValueAtTime(baseFreq * 0.75, hitTime);
-            subOsc.frequency.exponentialRampToValueAtTime(40, hitTime + decay * 0.85);
+            subOsc.frequency.exponentialRampToValueAtTime(42, hitTime + decay * 0.9);
 
             subGain.gain.setValueAtTime(0.0001, hitTime);
-            subGain.gain.linearRampToValueAtTime(vol * 0.85, hitTime + 0.01);
-            subGain.gain.exponentialRampToValueAtTime(0.0001, hitTime + decay * 1.0);
+            subGain.gain.linearRampToValueAtTime(vol * 0.75, hitTime + 0.01);
+            subGain.gain.exponentialRampToValueAtTime(0.0001, hitTime + decay * 0.95);
 
             subOsc.connect(subGain);
-            subGain.connect(ctx.destination);
+            subGain.connect(masterBus);
             subOsc.start(hitTime);
-            subOsc.stop(hitTime + decay * 1.0);
+            subOsc.stop(hitTime + decay * 0.95);
           }
 
+          // Chasquido inicial del golpe con mazo de madera (Bachi)
           try {
-            const snapLen = Math.floor(ctx.sampleRate * 0.03);
+            const snapLen = Math.floor(ctx.sampleRate * 0.025);
             const noiseBuffer = ctx.createBuffer(1, snapLen, ctx.sampleRate);
             const data = noiseBuffer.getChannelData(0);
             for (let i = 0; i < snapLen; i++) {
-              data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (snapLen * 0.25));
+              data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (snapLen * 0.22));
             }
             const noise = ctx.createBufferSource();
             noise.buffer = noiseBuffer;
 
             const filter = ctx.createBiquadFilter();
             filter.type = 'bandpass';
-            filter.frequency.setValueAtTime(isDeep ? 750 : 1100, hitTime);
-            filter.Q.setValueAtTime(2.5, hitTime);
+            filter.frequency.setValueAtTime(isDeep ? 800 : 1250, hitTime);
+            filter.Q.setValueAtTime(2.2, hitTime);
 
             const noiseGain = ctx.createGain();
-            noiseGain.gain.setValueAtTime(vol * 0.5, hitTime);
-            noiseGain.gain.exponentialRampToValueAtTime(0.001, hitTime + 0.03);
+            noiseGain.gain.setValueAtTime(vol * 0.40, hitTime);
+            noiseGain.gain.exponentialRampToValueAtTime(0.0001, hitTime + 0.025);
 
             noise.connect(filter);
             filter.connect(noiseGain);
-            noiseGain.connect(ctx.destination);
+            noiseGain.connect(masterBus);
 
             noise.start(hitTime);
-            noise.stop(hitTime + 0.03);
+            noise.stop(hitTime + 0.025);
           } catch (e) {}
         };
 
         if (sec === 0) {
           // Golpe de apertura potente: ¡DON... doko-doko... DON!
-          playHit(0.00, 125, 0.75, 0.32, true);
-          playHit(0.18, 145, 0.55, 0.18, false);
-          playHit(0.30, 155, 0.60, 0.18, false);
-          playHit(0.44, 130, 0.75, 0.30, true);
-          playHit(0.68, 95, 0.90, 0.85, true);
+          playHit(0.00, 120, 0.85, 0.30, true);
+          playHit(0.18, 145, 0.60, 0.16, false);
+          playHit(0.30, 155, 0.65, 0.16, false);
+          playHit(0.44, 130, 0.80, 0.28, true);
+          playHit(0.68, 92, 0.95, 0.75, true);
         } else if (sec < 10) {
-          // Cadencia de combate continua durante Osaekomi (1s - 9s)
-          playHit(0.00, 120, 0.70, 0.30, true);
-          playHit(0.32, 145, 0.50, 0.18, false);
-          playHit(0.62, 155, 0.55, 0.18, false);
+          // Cadencia rítmica continua de inmovilización (1s - 9s): Paso firme y seguro
+          playHit(0.00, 115, 0.75, 0.28, true);
+          playHit(0.30, 140, 0.50, 0.16, false);
+          playHit(0.60, 150, 0.55, 0.16, false);
         } else if (sec < 15) {
-          // Aumento de tensión (10s - 14s)
-          playHit(0.00, 110, 0.80, 0.32, true);
-          playHit(0.24, 150, 0.55, 0.16, false);
-          playHit(0.48, 115, 0.75, 0.26, true);
-          playHit(0.72, 160, 0.60, 0.16, false);
+          // Aumento de tensión (10s - 14s - Waza-ari alcanzado): Aceleración progresiva
+          playHit(0.00, 108, 0.82, 0.30, true);
+          playHit(0.22, 148, 0.60, 0.15, false);
+          playHit(0.46, 112, 0.78, 0.25, true);
+          playHit(0.68, 155, 0.65, 0.15, false);
         } else {
-          // Máxima tensión hacia Ippon (15s - 19s)
-          playHit(0.00, 100, 0.85, 0.35, true);
-          playHit(0.20, 155, 0.60, 0.15, false);
-          playHit(0.40, 105, 0.80, 0.30, true);
-          playHit(0.60, 165, 0.65, 0.15, false);
-          playHit(0.78, 175, 0.70, 0.15, false);
+          // Máxima tensión hacia Ippon (15s - 19s): Redoble enérgico final
+          playHit(0.00, 98, 0.88, 0.32, true);
+          playHit(0.18, 150, 0.65, 0.14, false);
+          playHit(0.36, 105, 0.82, 0.28, true);
+          playHit(0.54, 160, 0.70, 0.14, false);
+          playHit(0.72, 170, 0.75, 0.14, false);
         }
       } catch (err) {
         console.warn('Error en tambores Taiko:', err);
