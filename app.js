@@ -3812,6 +3812,15 @@ const DEMO_50_JUDOKAS = [
                 <div style="font-size:11px; color:var(--slate-400); margin-top:4px;">${f0.blue.belt} • ${f0.blue.weight} kg</div>
               </div>
             </div>
+
+            <div style="display:flex; justify-content:center; gap:10px; margin-top:14px; flex-wrap:wrap;">
+              <button class="btn-action" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%); color:#fff; font-weight:900; border:none; padding:8px 18px; font-size:13px; box-shadow:0 0 12px rgba(16,185,129,0.4);" onclick="startTournamentAndLoadFirstMatch()" title="Cargar Combate #1 en la Mesa Técnica y Marcador">
+                ▶ Iniciar Torneo en Mesa
+              </button>
+              <button class="btn-action" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color:#000; font-weight:900; border:none; padding:8px 18px; font-size:13px; box-shadow:0 0 12px rgba(245,158,11,0.4);" onclick="closeTournamentKickoffOverlayAndGo('order')" title="Ver cronograma completo de combates ronda a ronda">
+                📋 Ver Orden de Combates
+              </button>
+            </div>
           `;
         } else {
           firstMatchCard.innerHTML = `
@@ -3821,6 +3830,7 @@ const DEMO_50_JUDOKAS = [
               <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
                 <a href="crear_dojos.html" target="_blank" class="btn-action" style="background:linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color:#fff; font-weight:800; text-decoration:none;">🏢 Crear Dojos & Claves</a>
                 <button class="btn-action" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color:#000; font-weight:800;" onclick="closeTournamentKickoffOverlayAndGo('qr')">📥 Postulaciones de Dojos</button>
+                <button class="btn-action" style="background:#1e293b; color:#fff; border:1px solid var(--panel-border); font-weight:800;" onclick="closeTournamentKickoffOverlayAndGo('order')">📋 Orden de Combate</button>
               </div>
             </div>
           `;
