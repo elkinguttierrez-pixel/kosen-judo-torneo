@@ -26,6 +26,21 @@ function broadcastTournamentEvent(eventType, payload) {
   }
 }
 
+// Heartbeat periódico para mantener activas las conexiones SSE en móviles y proxies
+const sseHeartbeatInterval = setInterval(() => {
+  for (const client of sseClients) {
+    try {
+      client.write(':keepalive\n\n');
+    } catch (e) {
+      sseClients.delete(client);
+    }
+  }
+}, 25000);
+
+if (sseHeartbeatInterval.unref) {
+  sseHeartbeatInterval.unref();
+}
+
 // Obtener o inicializar estado global del torneo
 function getTournamentState() {
   if (fs.existsSync(TOURNAMENT_STATE_FILE)) {
@@ -170,10 +185,12 @@ const MIME_TYPES = {
 };
 
 const server = http.createServer((req, res) => {
-  // CORS Headers
+  // CORS & Security Headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
 
   if (req.method === 'OPTIONS') {
     res.writeHead(204);
@@ -271,7 +288,7 @@ const server = http.createServer((req, res) => {
   // 2. Obtener estado global completo del torneo
   if (pathname === '/api/tournament/state' && req.method === 'GET') {
     const stateData = getTournamentState();
-    res.writeHead(200, {
+    res.writeHead(200, { 
       'Content-Type': 'application/json; charset=utf-8',
       'Cache-Control': 'no-cache, no-store, must-revalidate'
     });
@@ -455,12 +472,21 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // API: Eliminar Dojo
-  if ((pathname.startsWith('/api/dojos/') && req.method === 'DELETE') || (pathname === '/api/dojos/delete' && req.method === 'POST')) {
-    const dojoId = pathname.startsWith('/api/dojos/') ? pathname.replace('/api/dojos/', '') : null;
+  // API: Eliminar Dojo (Soporta DELETE /api/dojos/:id y POST /api/dojos/delete)
+  const isDeleteDojoRoute = (pathname.startsWith('/api/dojos/') && pathname !== '/api/dojos/delete' && pathname !== '/api/dojos/auth' && req.method === 'DELETE') ||
+                            (pathname === '/api/dojos/delete' && req.method === 'POST');
+
+  if (isDeleteDojoRoute) {
+    const dojoIdFromUrl = (pathname.startsWith('/api/dojos/') && req.method === 'DELETE') ? pathname.replace('/api/dojos/', '') : null;
 
     parseRequestBody((err, payload) => {
-      const targetId = dojoId || (payload && payload.id);
+      const targetId = dojoIdFromUrl || (payload && payload.id);
+      if (!targetId) {
+        res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ success: false, error: 'Identificador de Dojo requerido' }));
+        return;
+      }
+
       let dojos = readJsonFile(DOJOS_FILE, []);
       const prevLen = dojos.length;
       dojos = dojos.filter(d => d.id !== targetId);
@@ -533,8 +559,8 @@ const server = http.createServer((req, res) => {
       });
 
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-      res.end(JSON.stringify({
-        success: true,
+      res.end(JSON.stringify({ 
+        success: true, 
         message: `Autenticación exitosa para ${matchedDojo.name}`,
         dojo: matchedDojo,
         judokas: uniqueJudokas
@@ -634,9 +660,11 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Servir archivos estáticos con protección estricta contra Path Traversal
+  // ==========================================
+  //  SERVIDOR DE ARCHIVOS ESTÁTICOS
+  // ==========================================
   let safePath = pathname === '/' ? '/index.html' : pathname;
-  // Sanitizar y resolver ruta absoluta
+  // Sanitizar y resolver ruta absoluta para prevenir Path Traversal
   let normalizedPath = path.normalize(safePath).replace(/^(\.\.[\/\\])+/, '');
   let filePath = path.resolve(PUBLIC_DIR, '.' + normalizedPath);
 
@@ -647,7 +675,16 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Si no existe el archivo
   if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
+    const hasKnownExt = path.extname(filePath).length > 1;
+    if (hasKnownExt) {
+      // Si el archivo solicitado tiene extensión (.js, .css, .png, etc.) y no existe, responder 404
+      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end('404 Recurso No Encontrado');
+      return;
+    }
+    // Si es una ruta HTML o sin extensión, servir index.html
     filePath = path.join(PUBLIC_DIR, 'index.html');
   }
 
@@ -675,6 +712,23 @@ const server = http.createServer((req, res) => {
   });
 });
 
+// Cierre elegante en señales de terminación
+function shutdownServer() {
+  console.log('\n🛑 Cerrando servidor y desconectando clientes SSE...');
+  for (const client of sseClients) {
+    try {
+      client.end();
+    } catch (_) {}
+  }
+  sseClients.clear();
+  server.close(() => {
+    process.exit(0);
+  });
+}
+
+process.on('SIGINT', shutdownServer);
+process.on('SIGTERM', shutdownServer);
+
 server.listen(PORT, '0.0.0.0', () => {
   const localIp = getLocalIp();
   console.log('===============================================================');
@@ -694,4 +748,3 @@ server.listen(PORT, '0.0.0.0', () => {
     } catch (e) {}
   }
 });
-

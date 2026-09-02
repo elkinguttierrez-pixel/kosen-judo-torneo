@@ -1,6 +1,6 @@
 {
-  "version": 783,
-  "updatedAt": "2026-08-28T19:03:01.016Z",
+  "version": 785,
+  "updatedAt": "2026-09-02T19:24:21.631Z",
   "judokas": [],
   "dojos": [
     {
@@ -21,7 +21,7 @@
       "city": "Medellin",
       "clave": "TEST-1332",
       "createdAt": "2026-08-28T18:32:36.163Z",
-      "judokasCount": 0
+      "judokasCount": 1
     }
   ],
   "matchHistory": [],
