@@ -2877,7 +2877,12 @@ const DEMO_50_JUDOKAS = [
                   btn.className = 'btn-match-toggle start';
                   playSound('buzzer');
                   broadcastLiveMatchToServer(true);
-                  openFinishModal('time');
+
+                  // REGLA JUDO/KOSEN: Si hay un Osaekomi en curso al agotarse el tiempo de combate,
+                  // el combate NO termina de inmediato, sino que continúa hasta que termine el Osaekomi (Toketa o Ippon).
+                  if (!state.osaekomiSide) {
+                    openFinishModal('time');
+                  }
                 }
               }
             } else {
@@ -2944,7 +2949,7 @@ const DEMO_50_JUDOKAS = [
       }, 500);
     }
 
-    function stopOsaekomi(side, isIppon = false) {
+    function stopOsaekomi(side, isIppon = false, skipAutoFinish = false) {
       if (state.osaekomiSide !== side) return;
       if (state.osaekomiInterval) {
         clearInterval(state.osaekomiInterval);
@@ -2970,6 +2975,15 @@ const DEMO_50_JUDOKAS = [
         changeScore(side, 'koka', 1);
       }
       broadcastLiveMatchToServer(true);
+
+      // REGLA JUDO/KOSEN: Si el tiempo reglamentario ya estaba en 00:00 y no estamos en Golden Score,
+      // al terminar el Osaekomi se finaliza automáticamente el combate por tiempo agotado (si no finalizó ya por 2 Ippons).
+      if (!skipAutoFinish && state.matchTimeRemaining === 0 && !state.isGoldenScore) {
+        const modal = document.getElementById('modal-finish');
+        if (!modal || modal.style.display !== 'flex') {
+          openFinishModal('time');
+        }
+      }
     }
 
     function updateOsaekomiDisplay(side) {
@@ -3088,7 +3102,7 @@ const DEMO_50_JUDOKAS = [
 
       // Detener el cronómetro y osaekomi si estaban activos
       if (state.isMatchRunning) toggleMatchTimer();
-      if (state.osaekomiSide) stopOsaekomi(state.osaekomiSide);
+      if (state.osaekomiSide) stopOsaekomi(state.osaekomiSide, false, true);
 
       const whiteNameEl = document.getElementById('white-name-input');
       const whiteDojoEl = document.getElementById('white-dojo-text');
@@ -3158,7 +3172,7 @@ const DEMO_50_JUDOKAS = [
       const reason = reasonSelect ? reasonSelect.value : 'Decisión Arbitral';
 
       if (state.isMatchRunning) toggleMatchTimer();
-      if (state.osaekomiSide) stopOsaekomi(state.osaekomiSide);
+      if (state.osaekomiSide) stopOsaekomi(state.osaekomiSide, false, true);
 
       const whiteNameEl = document.getElementById('white-name-input');
       const whiteDojoEl = document.getElementById('white-dojo-text');
@@ -4444,7 +4458,7 @@ const DEMO_50_JUDOKAS = [
 
     function resetMatch(fullReset = false) {
       if (state.isMatchRunning) toggleMatchTimer();
-      if (state.osaekomiSide) stopOsaekomi(state.osaekomiSide);
+      if (state.osaekomiSide) stopOsaekomi(state.osaekomiSide, false, true);
 
       state.white = { ippon: 0, wazaari: 0, yuko: 0, koka: 0, shido: 0, hansoku: false, judokaId: fullReset ? null : state.white.judokaId };
       state.blue  = { ippon: 0, wazaari: 0, yuko: 0, koka: 0, shido: 0, hansoku: false, judokaId: fullReset ? null : state.blue.judokaId };

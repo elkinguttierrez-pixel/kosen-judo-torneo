@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portal Oficial de Postulación de Judokas | KOSEN JUDO HEIKEGANI</title>
   <link rel="icon" type="image/jpeg" href="heikegani.jpg">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#131d2e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Postulación Judokas">
+  <link rel="apple-touch-icon" href="heikegani.jpg">
   <style>
     :root {
       --bg-dark: #090d16;
@@ -541,6 +548,182 @@
       font-size: 12px;
       margin-top: 20px;
     }
+
+    /* PWA INSTALLATION STYLES */
+    .btn-pwa-install {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #090d16;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 12px rgba(245, 158, 11, 0.45);
+      transition: all 0.2s ease;
+      animation: pulseGold 2s infinite;
+    }
+    .btn-pwa-install:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 18px rgba(245, 158, 11, 0.7);
+      background: #fbbf24;
+    }
+    @keyframes pulseGold {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.45); }
+      50% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+    }
+
+    .pwa-banner {
+      background: linear-gradient(90deg, #131d2e 0%, #1a273e 100%);
+      border: 1.5px solid var(--gold);
+      border-radius: 14px;
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.5);
+    }
+    .pwa-banner-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .pwa-banner-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1.5px solid var(--gold);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+    }
+    .pwa-banner-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .pwa-banner-desc {
+      font-size: 11px;
+      color: var(--slate-300);
+      margin-top: 2px;
+    }
+    .pwa-banner-btns {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .btn-pwa-banner-act {
+      background: var(--gold);
+      color: #090d16;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-pwa-banner-act:hover {
+      background: #fbbf24;
+      transform: scale(1.03);
+    }
+    .btn-pwa-banner-close {
+      background: transparent;
+      border: none;
+      color: var(--slate-400);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px 8px;
+      line-height: 1;
+    }
+
+    /* MODAL DE GUÍA PARA IPHONE / SAFARI */
+    .pwa-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(6px);
+      z-index: 10000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .pwa-modal-card {
+      background: #131d2e;
+      border: 2px solid var(--gold);
+      border-radius: 20px;
+      max-width: 440px;
+      width: 100%;
+      padding: 24px;
+      color: #fff;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.8);
+      animation: popModal 0.25s ease;
+    }
+    @keyframes popModal {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .pwa-modal-card h3 {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--gold-light);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pwa-step-item {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 14px;
+      align-items: flex-start;
+    }
+    .pwa-step-num {
+      background: var(--gold);
+      color: #090d16;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .pwa-step-text {
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--slate-300);
+    }
+    .pwa-step-text strong {
+      color: #fff;
+    }
+    .btn-pwa-modal-close {
+      width: 100%;
+      background: #1e293b;
+      border: 1px solid var(--slate-600);
+      color: #fff;
+      padding: 10px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
+    .btn-pwa-modal-close:hover {
+      background: #334155;
+    }
   </style>
 </head>
 <body>
@@ -556,6 +739,9 @@
     </a>
     
     <div class="header-nav-group">
+      <button id="btn-pwa-install-header" class="btn-pwa-install" onclick="triggerPWAInstall()" style="display:none;">
+        📲 Instalar App
+      </button>
       <a href="crear_dojos.html" class="btn-header-link" target="_blank">
         🏢 Crear / Administrar Dojos
       </a>
@@ -569,6 +755,21 @@
   </header>
 
   <div class="container">
+    
+    <!-- BANNER PWA PARA INSTALACIÓN EN MÓVILES -->
+    <div id="pwa-install-banner" class="pwa-banner" style="display:none;">
+      <div class="pwa-banner-left">
+        <img src="heikegani.jpg" class="pwa-banner-icon" alt="Kosen Judo">
+        <div>
+          <div class="pwa-banner-title">📲 Instalar en la Pantalla de Inicio</div>
+          <div class="pwa-banner-desc">Accede directamente desde tu celular como una App nativa.</div>
+        </div>
+      </div>
+      <div class="pwa-banner-btns">
+        <button class="btn-pwa-banner-act" onclick="triggerPWAInstall()">Instalar</button>
+        <button class="btn-pwa-banner-close" onclick="dismissPWABanner()">✕</button>
+      </div>
+    </div>
     
     <!-- BANNER DE BIENVENIDA -->
     <div class="hero-banner">
@@ -776,6 +977,26 @@
       KOSEN JUDO HEIKEGANI • Sistema de Gestión y Mesa Técnica Oficial • Ne-Waza Tournament
     </div>
 
+  </div>
+
+  <!-- MODAL DE GUÍA PARA IPHONE (SAFARI PWA) -->
+  <div id="modal-ios-install" class="pwa-modal-overlay" style="display:none;" onclick="if(event.target===this)closeIOSInstallModal()">
+    <div class="pwa-modal-card">
+      <h3>🍎 Instalar en iPhone / iPad</h3>
+      <div class="pwa-step-item">
+        <div class="pwa-step-num">1</div>
+        <div class="pwa-step-text">Toca el botón <strong>Compartir</strong> en la barra inferior de Safari (el icono de cuadro con una flecha hacia arriba <strong>⎋</strong>).</div>
+      </div>
+      <div class="pwa-step-item">
+        <div class="pwa-step-num">2</div>
+        <div class="pwa-step-text">Desliza hacia abajo en el menú y selecciona <strong>"Agregar a la pantalla de inicio"</strong> (o "Añadir a pantalla de inicio ➕").</div>
+      </div>
+      <div class="pwa-step-item">
+        <div class="pwa-step-num">3</div>
+        <div class="pwa-step-text">Pulsa <strong>"Agregar"</strong> arriba a la derecha. ¡Listo! Tendrás el icono en tu pantalla como una app nativa instalada.</div>
+      </div>
+      <button class="btn-pwa-modal-close" onclick="closeIOSInstallModal()">Entendido</button>
+    </div>
   </div>
 
   <div id="toast" class="toast-msg"></div>
@@ -1303,6 +1524,96 @@
           loadRegisteredDojosForSelect();
         }
       }, 3000);
+    }
+
+    // ==========================================
+    // PROGRESSIVE WEB APP (PWA) & SERVICE WORKER
+    // ==========================================
+    let deferredPWAInstallPrompt = null;
+    const isIOSDevice = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase()) && !window.MSStream;
+    const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+    // Registrar Service Worker
+    if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(() => console.log('✅ Service Worker PWA Kosen registrado'))
+          .catch((err) => console.warn('SW no registrado:', err.message));
+      });
+    }
+
+    // Evento nativo de instalación para Android / Chrome / Edge
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPWAInstallPrompt = e;
+      showPWAInstallControls();
+    });
+
+    function showPWAInstallControls() {
+      if (isStandaloneMode) return;
+      const headerBtn = document.getElementById('btn-pwa-install-header');
+      const banner = document.getElementById('pwa-install-banner');
+      if (headerBtn) headerBtn.style.display = 'inline-flex';
+      const dismissed = sessionStorage.getItem('pwa_banner_dismissed');
+      if (banner && !dismissed) banner.style.display = 'flex';
+    }
+
+    function dismissPWABanner() {
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.style.display = 'none';
+      sessionStorage.setItem('pwa_banner_dismissed', 'true');
+    }
+
+    async function triggerPWAInstall() {
+      if (deferredPWAInstallPrompt) {
+        deferredPWAInstallPrompt.prompt();
+        const { outcome } = await deferredPWAInstallPrompt.userChoice;
+        if (outcome === 'accepted') {
+          showToast('🥋 ¡Instalando aplicación en tu celular!');
+          const headerBtn = document.getElementById('btn-pwa-install-header');
+          const banner = document.getElementById('pwa-install-banner');
+          if (headerBtn) headerBtn.style.display = 'none';
+          if (banner) banner.style.display = 'none';
+        }
+        deferredPWAInstallPrompt = null;
+      } else if (isIOSDevice) {
+        openIOSInstallModal();
+      } else {
+        showToast('💡 Abre las opciones de tu navegador y pulsa "Instalar aplicación" o "Agregar a la pantalla de inicio".', '#2563eb');
+      }
+    }
+
+    function openIOSInstallModal() {
+      const modal = document.getElementById('modal-ios-install');
+      if (modal) modal.style.display = 'flex';
+    }
+
+    function closeIOSInstallModal() {
+      const modal = document.getElementById('modal-ios-install');
+      if (modal) modal.style.display = 'none';
+    }
+
+    window.addEventListener('appinstalled', () => {
+      showToast('🎉 ¡Kosen Judo App instalada con éxito en tu celular!');
+      const headerBtn = document.getElementById('btn-pwa-install-header');
+      const banner = document.getElementById('pwa-install-banner');
+      if (headerBtn) headerBtn.style.display = 'none';
+      if (banner) banner.style.display = 'none';
+      deferredPWAInstallPrompt = null;
+    });
+
+    // Detectar iOS para habilitar botón de instalación asistida
+    if (isIOSDevice && !isStandaloneMode) {
+      setTimeout(() => {
+        const headerBtn = document.getElementById('btn-pwa-install-header');
+        if (headerBtn) {
+          headerBtn.innerHTML = '📲 Instalar en iPhone';
+          headerBtn.style.display = 'inline-flex';
+        }
+        const banner = document.getElementById('pwa-install-banner');
+        const dismissed = sessionStorage.getItem('pwa_banner_dismissed');
+        if (banner && !dismissed) banner.style.display = 'flex';
+      }, 600);
     }
 
     window.addEventListener('DOMContentLoaded', async () => {

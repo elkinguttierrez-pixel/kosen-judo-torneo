@@ -1,0 +1,27 @@
+{
+  "name": "Postulación de Judokas | Kosen Judo Heikegani",
+  "short_name": "Postulación",
+  "description": "Portal móvil oficial para registrar y postular atletas al torneo Kosen Judo Heikegani.",
+  "start_url": "./postulacion.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#131d2e",
+  "orientation": "portrait-primary",
+  "lang": "es",
+  "categories": ["sports", "utilities"],
+  "icons": [
+    {
+      "src": "heikegani.jpg",
+      "sizes": "192x192 512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "heikegani.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "maskable"
+    }
+  ]
+}
