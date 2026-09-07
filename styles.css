@@ -31,20 +31,22 @@
       --purple: #8b5cf6;
     }
 
-    * {
-      box-sizing: border-box;
+    html, body {
+      height: 100%;
+      width: 100%;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      box-sizing: border-box;
     }
 
     body {
       background-color: var(--bg-dark);
       color: #f8fafc;
-      min-height: 100vh;
+      height: 100vh;
+      max-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden;
+      overflow: hidden;
       user-select: none;
     }
 
@@ -58,6 +60,7 @@
       flex-wrap: wrap;
       gap: 12px;
       z-index: 20;
+      flex-shrink: 0;
     }
 
     .brand {
@@ -193,18 +196,21 @@
     .view-container {
       display: none;
       flex: 1;
+      min-height: 0;
+      width: 100%;
     }
 
     .view-container.active {
       display: flex;
       flex-direction: column;
+      overflow-y: auto;
     }
 
     /* VISTA 1: SCOREBOARD (MARCADOR Y TIEMPO MONUMENTAL) */
     #view-scoreboard {
-      padding: clamp(4px, 0.9vh, 8px) clamp(8px, 1.2vw, 14px);
-      height: 100vh;
-      max-height: 100vh;
+      padding: 6px 10px;
+      height: 100%;
+      max-height: 100%;
       box-sizing: border-box;
       overflow: hidden;
     }
@@ -212,14 +218,15 @@
     #view-scoreboard.active {
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
 
     .scoreboard-layout {
       display: grid;
-      grid-template-columns: 1fr minmax(320px, 390px) 1fr;
+      grid-template-columns: 1fr minmax(280px, 340px) 1fr;
       flex: 1;
       min-height: 0;
-      gap: clamp(8px, 1vw, 14px);
+      gap: 8px;
       padding: 0;
       background: #060911;
       align-items: stretch;
@@ -229,22 +236,25 @@
     @media (max-width: 1100px) {
       .scoreboard-layout {
         grid-template-columns: 1fr;
-        gap: 12px;
+        gap: 10px;
         overflow-y: auto;
       }
     }
 
     .team-panel {
-      padding: clamp(6px, 1vh, 12px) clamp(8px, 1.2vw, 16px);
+      padding: clamp(6px, 1.2vh, 10px) clamp(8px, 1.2vw, 12px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      gap: clamp(4px, 0.7vh, 8px);
+      gap: clamp(3px, 0.6vh, 6px);
       position: relative;
-      border-radius: 16px;
+      border-radius: 14px;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
       transition: all 0.2s ease;
+      height: 100%;
+      max-height: 100%;
+      box-sizing: border-box;
       min-height: 0;
       overflow: hidden;
     }
@@ -426,9 +436,9 @@
       width: 100%;
       text-align: center;
       background: rgba(0, 0, 0, 0.04);
-      padding: clamp(4px, 0.8vh, 8px) clamp(8px, 1vw, 12px);
-      border-radius: 12px;
-      border: 2px solid rgba(0, 0, 0, 0.08);
+      padding: clamp(3px, 0.6vh, 6px) clamp(6px, 0.8vw, 10px);
+      border-radius: 10px;
+      border: 1.5px solid rgba(0, 0, 0, 0.08);
       position: relative;
       flex-shrink: 0;
     }
@@ -439,19 +449,19 @@
     }
 
     .ippon-badge-title {
-      font-size: clamp(11px, 1.3vh, 14px);
+      font-size: clamp(10px, 1.2vh, 12px);
       font-weight: 900;
-      letter-spacing: 1.5px;
+      letter-spacing: 1.2px;
       color: var(--gold);
       text-transform: uppercase;
     }
 
     .ippon-number {
-      font-size: clamp(50px, 9vh, 100px);
+      font-size: clamp(38px, 7.5vh, 76px);
       font-weight: 900;
       font-family: 'Arial Black', Impact, sans-serif;
       line-height: 0.9;
-      margin: 2px 0;
+      margin: 1px 0;
     }
 
     .team-white .ippon-number {
@@ -460,12 +470,12 @@
 
     .team-blue .ippon-number {
       color: #ffffff;
-      text-shadow: 0 0 30px rgba(56, 189, 248, 0.6);
+      text-shadow: 0 0 25px rgba(56, 189, 248, 0.6);
     }
 
     .ippon-actions {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       justify-content: center;
     }
 
@@ -473,28 +483,28 @@
       background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
       color: #000;
       border: none;
-      padding: clamp(6px, 1vh, 10px) clamp(10px, 1.5vw, 18px);
-      border-radius: 8px;
-      font-size: clamp(11px, 1.4vh, 14px);
+      padding: clamp(4px, 0.8vh, 8px) clamp(8px, 1.2vw, 14px);
+      border-radius: 6px;
+      font-size: clamp(10px, 1.3vh, 12px);
       font-weight: 900;
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+      box-shadow: 0 3px 10px rgba(245, 158, 11, 0.35);
       transition: all 0.15s;
       flex: 1;
     }
 
     .btn-ippon-add:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.6);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.5);
     }
 
     .btn-ippon-sub {
       background: rgba(0, 0, 0, 0.15);
       border: 1px solid rgba(0, 0, 0, 0.2);
       color: inherit;
-      padding: clamp(5px, 0.8vh, 8px) 12px;
-      border-radius: 8px;
-      font-size: clamp(12px, 1.5vh, 15px);
+      padding: clamp(4px, 0.7vh, 7px) 10px;
+      border-radius: 6px;
+      font-size: clamp(11px, 1.4vh, 13px);
       font-weight: 900;
       cursor: pointer;
     }
@@ -508,15 +518,15 @@
     .tech-scores-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: clamp(4px, 0.7vw, 8px);
+      gap: 4px;
       width: 100%;
       flex-shrink: 0;
     }
 
     .tech-card {
       background: rgba(0, 0, 0, 0.05);
-      padding: clamp(3px, 0.5vh, 6px) 4px;
-      border-radius: 10px;
+      padding: clamp(2px, 0.4vh, 5px) 2px;
+      border-radius: 8px;
       border: 1px solid rgba(0, 0, 0, 0.08);
       text-align: center;
     }
@@ -527,7 +537,7 @@
     }
 
     .tech-card .label {
-      font-size: clamp(10px, 1.2vh, 12px);
+      font-size: clamp(9px, 1.1vh, 11px);
       font-weight: 900;
       letter-spacing: 0.5px;
     }
@@ -536,11 +546,11 @@
     .team-blue .tech-card .label { color: #93c5fd; }
 
     .tech-card .value {
-      font-size: clamp(26px, 4.4vh, 42px);
+      font-size: clamp(20px, 3.8vh, 34px);
       font-weight: 900;
       font-family: 'Arial Black', monospace;
       line-height: 1;
-      margin: 1px 0;
+      margin: 0;
     }
 
     .team-white .tech-card .value { color: #0f172a; }
@@ -549,15 +559,15 @@
     .tech-btn-group {
       display: flex;
       justify-content: center;
-      gap: 4px;
+      gap: 3px;
     }
 
     .tech-btn-group button {
       flex: 1;
-      height: clamp(22px, 2.8vh, 28px);
-      border-radius: 6px;
+      height: clamp(18px, 2.4vh, 24px);
+      border-radius: 5px;
       border: 1px solid rgba(0, 0, 0, 0.2);
-      font-size: clamp(12px, 1.6vh, 15px);
+      font-size: clamp(11px, 1.4vh, 13px);
       font-weight: 900;
       cursor: pointer;
       background: rgba(0,0,0,0.08);
@@ -579,12 +589,12 @@
     /* SHIDOS */
     .shido-row {
       display: flex;
-      gap: clamp(6px, 0.8vw, 10px);
+      gap: 6px;
       align-items: center;
       justify-content: center;
       background: rgba(0, 0, 0, 0.05);
-      padding: clamp(3px, 0.5vh, 6px) clamp(8px, 1.2vw, 14px);
-      border-radius: 20px;
+      padding: clamp(2px, 0.4vh, 4px) clamp(6px, 1vw, 10px);
+      border-radius: 16px;
       width: 100%;
       flex-shrink: 0;
     }
@@ -594,24 +604,24 @@
     }
 
     .shido-label {
-      font-size: clamp(10px, 1.2vh, 12px);
+      font-size: clamp(9px, 1.1vh, 11px);
       font-weight: 900;
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
     }
 
     .shido-badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: clamp(22px, 2.8vh, 28px);
-      height: clamp(22px, 2.8vh, 28px);
+      width: clamp(18px, 2.4vh, 24px);
+      height: clamp(18px, 2.4vh, 24px);
       border-radius: 50%;
       background: rgba(0, 0, 0, 0.15);
       color: #94a3b8;
-      font-size: clamp(10px, 1.3vh, 12px);
+      font-size: clamp(9px, 1.1vh, 11px);
       font-weight: 900;
       cursor: pointer;
-      border: 2px solid rgba(0,0,0,0.2);
+      border: 1.5px solid rgba(0,0,0,0.2);
       transition: all 0.15s;
     }
 
@@ -625,24 +635,24 @@
       color: #000;
       font-weight: 900;
       border-color: #b45309;
-      box-shadow: 0 0 12px var(--gold);
+      box-shadow: 0 0 10px var(--gold);
     }
 
     .shido-badge.hansoku {
       background: var(--red);
       color: #fff;
       border-color: #991b1b;
-      box-shadow: 0 0 14px var(--red);
+      box-shadow: 0 0 12px var(--red);
     }
 
     /* PANEL OSAEKOMI */
     .osaekomi-panel {
       width: 100%;
       background: rgba(0, 0, 0, 0.08);
-      border-radius: 12px;
-      padding: clamp(4px, 0.7vh, 8px) 8px;
+      border-radius: 10px;
+      padding: clamp(3px, 0.6vh, 6px) 6px;
       text-align: center;
-      border: 2px solid transparent;
+      border: 1.5px solid transparent;
       transition: all 0.2s ease;
       flex-shrink: 0;
     }
@@ -658,38 +668,38 @@
     }
 
     @keyframes osaekomiGlow {
-      from { box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
-      to { box-shadow: 0 0 25px rgba(245, 158, 11, 0.7); }
+      from { box-shadow: 0 0 8px rgba(245, 158, 11, 0.3); }
+      to { box-shadow: 0 0 20px rgba(245, 158, 11, 0.7); }
     }
 
     .osaekomi-title {
-      font-size: clamp(10px, 1.2vh, 12px);
+      font-size: clamp(9px, 1.1vh, 11px);
       font-weight: 900;
-      letter-spacing: 1.2px;
+      letter-spacing: 1px;
     }
 
     .osaekomi-timer-number {
-      font-size: clamp(30px, 5vh, 50px);
+      font-size: clamp(26px, 4.2vh, 40px);
       font-weight: 900;
       font-family: 'Courier New', monospace;
       color: var(--gold);
-      text-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+      text-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
       line-height: 1;
-      margin: 1px 0 3px 0;
+      margin: 0;
     }
 
     .osaekomi-buttons {
       display: flex;
-      gap: 6px;
+      gap: 5px;
     }
 
     .osaekomi-buttons button {
       flex: 1;
-      padding: clamp(5px, 0.8vh, 8px);
-      border-radius: 6px;
+      padding: clamp(4px, 0.7vh, 7px);
+      border-radius: 5px;
       border: none;
       font-weight: 900;
-      font-size: clamp(10px, 1.3vh, 12px);
+      font-size: clamp(9px, 1.2vh, 11px);
       cursor: pointer;
       transition: all 0.15s;
     }
@@ -714,15 +724,18 @@
     .center-control-panel {
       position: relative;
       background: #0f172a;
-      padding: clamp(6px, 1vh, 12px) clamp(8px, 1vw, 12px);
+      padding: clamp(6px, 1.2vh, 10px) clamp(8px, 1.2vw, 12px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      gap: clamp(4px, 0.8vh, 8px);
-      border-radius: 16px;
+      gap: clamp(3px, 0.6vh, 6px);
+      border-radius: 14px;
       border: 2px solid var(--panel-border);
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+      height: 100%;
+      max-height: 100%;
+      box-sizing: border-box;
       min-height: 0;
       overflow: hidden;
     }
@@ -731,8 +744,8 @@
       width: 100%;
       background: rgba(0, 0, 0, 0.4);
       border: 1px solid rgba(245, 158, 11, 0.3);
-      border-radius: 10px;
-      padding: 8px 10px;
+      border-radius: 8px;
+      padding: 6px 8px;
       text-align: center;
     }
 
@@ -740,31 +753,31 @@
     .scoreboard-match-banner {
       width: 100%;
       background: linear-gradient(90deg, #101726 0%, #162238 50%, #101726 100%);
-      border: 2px solid #25334d;
-      border-radius: 12px;
-      padding: clamp(4px, 0.7vh, 8px) clamp(10px, 1.2vw, 16px);
-      margin-bottom: clamp(4px, 0.7vh, 8px);
+      border: 1.5px solid #25334d;
+      border-radius: 10px;
+      padding: 4px 12px;
+      margin-bottom: 6px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 8px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      gap: 6px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
       flex-shrink: 0;
     }
 
     .match-banner-info {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 1px;
       flex: 1;
-      min-width: 260px;
+      min-width: 240px;
     }
 
     .match-banner-badges {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       flex-wrap: wrap;
     }
 
@@ -772,51 +785,51 @@
       background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
       color: #000;
       font-weight: 900;
-      font-size: clamp(10px, 1.3vh, 12px);
-      padding: 3px 8px;
-      border-radius: 6px;
+      font-size: clamp(9px, 1.2vh, 11px);
+      padding: 2px 7px;
+      border-radius: 5px;
       letter-spacing: 0.5px;
     }
 
     .match-cat-badge {
-      font-size: clamp(10px, 1.3vh, 12px);
+      font-size: clamp(9px, 1.2vh, 11px);
       font-weight: 800;
       color: #38bdf8;
       background: rgba(56, 189, 248, 0.15);
       border: 1px solid rgba(56, 189, 248, 0.3);
-      padding: 2px 8px;
-      border-radius: 6px;
+      padding: 1px 7px;
+      border-radius: 5px;
     }
 
     .match-status-badge {
-      font-size: clamp(9px, 1.1vh, 11px);
+      font-size: clamp(8px, 1vh, 10px);
       font-weight: 800;
-      padding: 2px 6px;
-      border-radius: 6px;
+      padding: 1px 5px;
+      border-radius: 5px;
       background: rgba(16, 185, 129, 0.2);
       color: #34d399;
       border: 1px solid #10b981;
     }
 
     .match-banner-fighters {
-      font-size: clamp(12px, 1.6vh, 15px);
+      font-size: clamp(11px, 1.4vh, 13px);
       font-weight: 800;
       color: #f8fafc;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
     }
 
     .match-banner-actions {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       flex-wrap: wrap;
     }
 
     .btn-banner-nav {
-      padding: 6px 10px;
-      font-size: 11px;
+      padding: 5px 8px;
+      font-size: 10px;
       font-weight: 800;
-      border-radius: 6px;
+      border-radius: 5px;
       border: 1px solid var(--slate-600);
       background: #1e293b;
       color: #fff;
@@ -829,41 +842,41 @@
     }
 
     .match-banner-select {
-      max-width: 260px;
-      padding: 6px 8px;
-      font-size: 11px;
+      max-width: 240px;
+      padding: 5px 7px;
+      font-size: 10px;
       font-weight: 700;
       background: #090d16;
       color: #fff;
       border: 1px solid var(--slate-600);
-      border-radius: 6px;
+      border-radius: 5px;
       cursor: pointer;
     }
 
     .btn-banner-next-pending {
-      padding: 6px 12px;
-      border-radius: 6px;
+      padding: 5px 10px;
+      border-radius: 5px;
       border: 1px solid var(--gold);
       background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
       color: #000;
       font-weight: 900;
-      font-size: 11px;
+      font-size: 10px;
       cursor: pointer;
       transition: all 0.15s ease;
-      box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
     }
     .btn-banner-next-pending:hover {
       transform: scale(1.03);
-      box-shadow: 0 0 16px rgba(245, 158, 11, 0.6);
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.6);
     }
 
     .match-bar-title {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 900;
       color: var(--gold);
       text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 6px;
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -873,14 +886,14 @@
       display: flex;
       gap: 4px;
       align-items: center;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .match-bar-nav button {
-      padding: 6px 10px;
-      font-size: 12px;
+      padding: 5px 8px;
+      font-size: 11px;
       font-weight: 800;
-      border-radius: 6px;
+      border-radius: 5px;
       border: 1px solid var(--slate-600);
       background: #1e293b;
       color: #fff;
@@ -892,22 +905,22 @@
 
     .match-bar-select {
       flex: 1;
-      padding: 6px 8px;
-      font-size: 12px;
+      padding: 5px 7px;
+      font-size: 11px;
       font-weight: 700;
       background: #090d16;
       color: #fff;
       border: 1px solid var(--slate-600);
-      border-radius: 6px;
+      border-radius: 5px;
     }
 
     .btn-next-pair {
-      padding: 8px 12px;
-      border-radius: 8px;
+      padding: 6px 10px;
+      border-radius: 6px;
       border: 1px solid var(--gold);
       background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(217, 119, 6, 0.25) 100%);
       color: var(--gold-light);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 900;
       cursor: pointer;
       width: 100%;
@@ -920,12 +933,12 @@
 
     .category-select-custom {
       width: 100%;
-      padding: 6px 10px;
+      padding: 5px 8px;
       background: #090d16;
       color: var(--gold);
       border: 1px solid rgba(245, 158, 11, 0.4);
-      border-radius: 8px;
-      font-size: 11px;
+      border-radius: 6px;
+      font-size: 10px;
       font-weight: 800;
       text-align: center;
     }
@@ -935,24 +948,24 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: clamp(8px, 1vw, 12px);
+      gap: 8px;
       background: linear-gradient(135deg, rgba(10, 15, 29, 0.95) 0%, rgba(26, 36, 56, 0.9) 100%);
       border: 1.5px solid rgba(245, 158, 11, 0.5);
-      border-radius: 12px;
-      padding: clamp(4px, 0.6vh, 6px) clamp(8px, 1vw, 12px);
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6), inset 0 0 12px rgba(245, 158, 11, 0.15);
+      border-radius: 10px;
+      padding: clamp(3px, 0.6vh, 6px) clamp(6px, 1vw, 10px);
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(245, 158, 11, 0.15);
       user-select: none;
       flex-shrink: 0;
     }
 
     .scoreboard-brand-img {
-      width: clamp(34px, 4.5vh, 44px);
-      height: clamp(34px, 4.5vh, 44px);
-      border-radius: 8px;
-      border: 2px solid var(--gold);
+      width: clamp(28px, 3.8vh, 38px);
+      height: clamp(28px, 3.8vh, 38px);
+      border-radius: 6px;
+      border: 1.5px solid var(--gold);
       object-fit: contain;
       background: #080c14;
-      box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
       flex-shrink: 0;
     }
 
@@ -960,22 +973,22 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      line-height: 1.15;
+      line-height: 1.1;
     }
 
     .scoreboard-brand-title {
-      font-size: clamp(16px, 2.2vh, 20px);
+      font-size: clamp(14px, 2vh, 18px);
       font-weight: 900;
-      letter-spacing: 1.5px;
+      letter-spacing: 1.2px;
       color: #ffffff;
-      text-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
+      text-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
       font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
     }
 
     .scoreboard-brand-subtitle {
-      font-size: clamp(9px, 1.1vh, 11px);
+      font-size: clamp(8px, 1vh, 10px);
       font-weight: 800;
-      letter-spacing: 1.2px;
+      letter-spacing: 1px;
       color: var(--gold);
       text-transform: uppercase;
     }
@@ -984,35 +997,36 @@
     .match-clock-container {
       width: 100%;
       text-align: center;
+      flex-shrink: 0;
     }
 
     .match-clock-digital {
-      font-size: clamp(50px, 8.5vh, 84px);
+      font-size: clamp(42px, 7.5vh, 72px);
       font-weight: 900;
       font-family: 'Courier New', Courier, monospace;
       color: #38bdf8;
       background: #030712;
-      padding: clamp(6px, 1.2vh, 12px) 6px;
-      border-radius: 14px;
-      border: 3px solid #1e40af;
-      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9), 0 0 30px rgba(56, 189, 248, 0.3);
-      letter-spacing: 2px;
+      padding: clamp(4px, 1vh, 8px) 4px;
+      border-radius: 12px;
+      border: 2.5px solid #1e40af;
+      box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.9), 0 0 25px rgba(56, 189, 248, 0.3);
+      letter-spacing: 1.5px;
       line-height: 1;
     }
 
     .match-clock-digital.goldenscore {
       color: #fbbf24;
       border-color: #f59e0b;
-      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9), 0 0 35px rgba(245, 158, 11, 0.5);
+      box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.9), 0 0 30px rgba(245, 158, 11, 0.5);
     }
 
     .goldenscore-indicator {
       display: none;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 900;
       color: var(--gold);
-      letter-spacing: 2px;
-      margin-top: 4px;
+      letter-spacing: 1.5px;
+      margin-top: 2px;
     }
 
     .goldenscore-indicator.active {
@@ -1024,45 +1038,45 @@
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: clamp(4px, 0.6vh, 6px);
+      gap: clamp(3px, 0.5vh, 5px);
       flex-shrink: 0;
     }
 
     .btn-match-toggle {
-      padding: clamp(8px, 1.4vh, 14px) 12px;
-      border-radius: 10px;
+      padding: clamp(6px, 1.2vh, 11px) 10px;
+      border-radius: 8px;
       border: none;
-      font-size: clamp(14px, 2vh, 18px);
+      font-size: clamp(13px, 1.8vh, 17px);
       font-weight: 900;
       cursor: pointer;
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       transition: all 0.15s;
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
     }
 
     .btn-match-toggle.start {
       background: linear-gradient(135deg, #10b981 0%, #059669 100%);
       color: #ffffff;
-      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.45);
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45);
     }
 
     .btn-match-toggle.pause {
       background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
       color: #ffffff;
-      box-shadow: 0 4px 16px rgba(239, 68, 68, 0.45);
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.45);
     }
 
     .btn-match-finish {
-      padding: clamp(6px, 0.9vh, 9px);
-      border-radius: 8px;
+      padding: clamp(4px, 0.8vh, 8px);
+      border-radius: 6px;
       border: 1px solid var(--slate-600);
       background: #1e293b;
       color: #fff;
-      font-size: clamp(10px, 1.3vh, 12px);
+      font-size: clamp(10px, 1.2vh, 11px);
       font-weight: 800;
       cursor: pointer;
       transition: all 0.15s;
