@@ -2097,6 +2097,16 @@ const DEMO_50_JUDOKAS = [
         if (bannerFighters) {
           bannerFighters.innerHTML = `⚪ <b>${escapeHtml(curFight.white.name)}</b> <span style="font-size:12px; color:#cbd5e1;">(${escapeHtml(curFight.white.dojo)})</span> <span style="color:var(--gold); margin:0 6px;">VS</span> 🔵 <b>${escapeHtml(curFight.blue.name)}</b> <span style="font-size:12px; color:#93c5fd;">(${escapeHtml(curFight.blue.dojo)})</span>`;
         }
+
+        // Asegurar que los paneles del tablero muestren visiblemente los nombres de los judokas del combate actual
+        const whiteNameInput = document.getElementById('white-name-input');
+        const blueNameInput = document.getElementById('blue-name-input');
+        if (whiteNameInput && (!state.white.judokaId || whiteNameInput.value === 'Judoka Blanco' || !whiteNameInput.value)) {
+          loadJudokaToScoreboard(curFight.white.id, 'white');
+        }
+        if (blueNameInput && (!state.blue.judokaId || blueNameInput.value === 'Judoka Azul' || !blueNameInput.value)) {
+          loadJudokaToScoreboard(curFight.blue.id, 'blue');
+        }
       } else {
         if (counter) {
           counter.innerText = `${fights.length} Combates (${completedCount}/${fights.length} completados)`;
@@ -5990,6 +6000,15 @@ const DEMO_50_JUDOKAS = [
       renderJudokasTable();
       updateDojoDatalist();
       updateScoreboardDropdowns();
+
+      // Cargar de inmediato los competidores del combate activo/pendiente en los paneles del tablero
+      const initialPairs = getOfficialMatchPairs();
+      if (initialPairs.length > 0) {
+        let firstPending = initialPairs.findIndex(f => !isFightCompleted(f).completed && !isFightCompleted(f).unneeded);
+        if (firstPending === -1) firstPending = 0;
+        loadMatchByIndex(firstPending, true);
+      }
+
       updateTournamentMatchSelector();
       renderCategoryPoolsView();
       renderTournamentOrderView();
@@ -6001,6 +6020,38 @@ const DEMO_50_JUDOKAS = [
       loadLiveServerPostulaciones();
       initLiveSyncEngine();
       openTournamentKickoffOverlay();
+
+      // Listeners de edición en tiempo real para que los nombres editados manualmente se mantengan visibles
+      const whiteNameInput = document.getElementById('white-name-input');
+      const blueNameInput = document.getElementById('blue-name-input');
+
+      if (whiteNameInput) {
+        const handleWhiteInput = () => {
+          const wVal = whiteNameInput.value.trim() || 'Judoka Blanco';
+          const bVal = blueNameInput ? (blueNameInput.value.trim() || 'Judoka Azul') : 'Judoka Azul';
+          const bannerFighters = document.getElementById('live-active-match-fighters');
+          if (bannerFighters) {
+            bannerFighters.innerHTML = `⚪ <b>${escapeHtml(wVal)}</b> <span style="color:var(--gold); margin:0 6px;">VS</span> 🔵 <b>${escapeHtml(bVal)}</b>`;
+          }
+          broadcastLiveMatchToServer(false);
+        };
+        whiteNameInput.addEventListener('input', handleWhiteInput);
+        whiteNameInput.addEventListener('change', handleWhiteInput);
+      }
+
+      if (blueNameInput) {
+        const handleBlueInput = () => {
+          const bVal = blueNameInput.value.trim() || 'Judoka Azul';
+          const wVal = whiteNameInput ? (whiteNameInput.value.trim() || 'Judoka Blanco') : 'Judoka Blanco';
+          const bannerFighters = document.getElementById('live-active-match-fighters');
+          if (bannerFighters) {
+            bannerFighters.innerHTML = `⚪ <b>${escapeHtml(wVal)}</b> <span style="color:var(--gold); margin:0 6px;">VS</span> 🔵 <b>${escapeHtml(bVal)}</b>`;
+          }
+          broadcastLiveMatchToServer(false);
+        };
+        blueNameInput.addEventListener('input', handleBlueInput);
+        blueNameInput.addEventListener('change', handleBlueInput);
+      }
 
       // Sondeo inteligente optimizado (Smart Polling)
       let livePollTimer = null;
