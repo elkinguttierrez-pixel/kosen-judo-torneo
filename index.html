@@ -6,7 +6,7 @@
   <title>KOSEN JUDO HEIKEGANI | Mesa Técnica & Torneo Oficial</title>
   <link rel="icon" type="image/jpeg" href="heikegani.jpg">
   <script src="qrcode.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=4.2">
+  <link rel="stylesheet" href="styles.css?v=4.3">
 </head>
 <body>
 
@@ -129,20 +129,21 @@
           </div>
         </div>
 
-        <!-- IPPON (2 DE 3) -->
-        <div class="ippon-container">
-          <div class="ippon-badge-title">IPPON (2 DE 3)</div>
-          <div class="ippon-number" id="white-ippon-val">0</div>
-          <div class="ippon-actions">
-            <button class="btn-ippon-add" onclick="addIpponScore('white')">+ IPPON / SUMISIÓN</button>
-            <button class="btn-ippon-sub" onclick="changeScore('white', 'ippon', -1)" title="Restar Ippon">-</button>
-          </div>
-        </div>
-
-        <!-- WAZA-ARI / YUKO / KOKA -->
+        <!-- PUNTUACIONES: 4 COLUMNAS VERTICALES (IPPON | WAZA-ARI | YUKO | KOKA) -->
         <div class="tech-scores-grid">
+          <!-- 1. IPPON -->
+          <div class="tech-card card-ippon">
+            <div class="label" style="color:var(--gold);">IPPON (I)</div>
+            <div class="value" id="white-ippon-val">0</div>
+            <div class="tech-btn-group">
+              <button onclick="addIpponScore('white')" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color:#000; font-weight:900;" title="Sumar Ippon / Sumisión (2 de 3)">+</button>
+              <button onclick="changeScore('white', 'ippon', -1)" title="Restar Ippon">-</button>
+            </div>
+          </div>
+
+          <!-- 2. WAZA-ARI -->
           <div class="tech-card">
-            <div class="label">WAZA-ARI (W)</div>
+            <div class="label">WASARI (W)</div>
             <div class="value" id="white-wazaari-val">0</div>
             <div class="tech-btn-group">
               <button onclick="changeScore('white', 'wazaari', 1)">+</button>
@@ -150,6 +151,7 @@
             </div>
           </div>
 
+          <!-- 3. YUKO -->
           <div class="tech-card">
             <div class="label">YUKO (Y)</div>
             <div class="value" id="white-yuko-val">0</div>
@@ -159,6 +161,7 @@
             </div>
           </div>
 
+          <!-- 4. KOKA -->
           <div class="tech-card">
             <div class="label">KOKA (K)</div>
             <div class="value" id="white-koka-val">0</div>
@@ -271,20 +274,21 @@
           </div>
         </div>
 
-        <!-- IPPON (2 DE 3) -->
-        <div class="ippon-container">
-          <div class="ippon-badge-title">IPPON (2 DE 3)</div>
-          <div class="ippon-number" id="blue-ippon-val">0</div>
-          <div class="ippon-actions">
-            <button class="btn-ippon-add" onclick="addIpponScore('blue')">+ IPPON / SUMISIÓN</button>
-            <button class="btn-ippon-sub" onclick="changeScore('blue', 'ippon', -1)" title="Restar Ippon">-</button>
-          </div>
-        </div>
-
-        <!-- WAZA-ARI / YUKO / KOKA -->
+        <!-- PUNTUACIONES: 4 COLUMNAS VERTICALES (IPPON | WAZA-ARI | YUKO | KOKA) -->
         <div class="tech-scores-grid">
+          <!-- 1. IPPON -->
+          <div class="tech-card card-ippon">
+            <div class="label" style="color:var(--gold);">IPPON (I)</div>
+            <div class="value" id="blue-ippon-val">0</div>
+            <div class="tech-btn-group">
+              <button onclick="addIpponScore('blue')" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color:#000; font-weight:900;" title="Sumar Ippon / Sumisión (2 de 3)">+</button>
+              <button onclick="changeScore('blue', 'ippon', -1)" title="Restar Ippon">-</button>
+            </div>
+          </div>
+
+          <!-- 2. WAZA-ARI -->
           <div class="tech-card">
-            <div class="label">WAZA-ARI (W)</div>
+            <div class="label">WASARI (W)</div>
             <div class="value" id="blue-wazaari-val">0</div>
             <div class="tech-btn-group">
               <button onclick="changeScore('blue', 'wazaari', 1)">+</button>
@@ -292,6 +296,7 @@
             </div>
           </div>
 
+          <!-- 3. YUKO -->
           <div class="tech-card">
             <div class="label">YUKO (Y)</div>
             <div class="value" id="blue-yuko-val">0</div>
@@ -301,6 +306,7 @@
             </div>
           </div>
 
+          <!-- 4. KOKA -->
           <div class="tech-card">
             <div class="label">KOKA (K)</div>
             <div class="value" id="blue-koka-val">0</div>
@@ -1353,6 +1359,6 @@ Dojo: Bushido
   </footer>
 
   <!-- JAVASCRIPT -->
-  <script src="app.js?v=4.2"></script>
+  <script src="app.js?v=4.3"></script>
 </body>
 </html>

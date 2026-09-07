@@ -451,152 +451,99 @@
     .tag-brown { background: #d7ccc8; color: #4e342e; }
     .tag-black { background: #0f172a; color: #ffffff; }
 
-    /* CONTENEDOR IPPON GIGANTE */
-    .ippon-container {
-      width: 100%;
-      text-align: center;
-      background: rgba(0, 0, 0, 0.04);
-      padding: clamp(3px, 0.6vh, 6px) clamp(6px, 0.8vw, 10px);
-      border-radius: 10px;
-      border: 1.5px solid rgba(0, 0, 0, 0.08);
-      position: relative;
-      flex-shrink: 0;
-    }
-
-    .team-blue .ippon-container {
-      background: rgba(0, 0, 0, 0.25);
-      border-color: rgba(255, 255, 255, 0.15);
-    }
-
-    .ippon-badge-title {
-      font-size: clamp(10px, 1.2vh, 12px);
-      font-weight: 900;
-      letter-spacing: 1.2px;
-      color: var(--gold);
-      text-transform: uppercase;
-    }
-
-    .ippon-number {
-      font-size: clamp(38px, 7.5vh, 76px);
-      font-weight: 900;
-      font-family: 'Arial Black', Impact, sans-serif;
-      line-height: 0.9;
-      margin: 1px 0;
-    }
-
-    .team-white .ippon-number {
-      color: #0f172a;
-    }
-
-    .team-blue .ippon-number {
-      color: #ffffff;
-      text-shadow: 0 0 25px rgba(56, 189, 248, 0.6);
-    }
-
-    .ippon-actions {
-      display: flex;
-      gap: 6px;
-      justify-content: center;
-    }
-
-    .btn-ippon-add {
-      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-      color: #000;
-      border: none;
-      padding: clamp(4px, 0.8vh, 8px) clamp(8px, 1.2vw, 14px);
-      border-radius: 6px;
-      font-size: clamp(10px, 1.3vh, 12px);
-      font-weight: 900;
-      cursor: pointer;
-      box-shadow: 0 3px 10px rgba(245, 158, 11, 0.35);
-      transition: all 0.15s;
-      flex: 1;
-    }
-
-    .btn-ippon-add:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.5);
-    }
-
-    .btn-ippon-sub {
-      background: rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(0, 0, 0, 0.2);
-      color: inherit;
-      padding: clamp(4px, 0.7vh, 7px) 10px;
-      border-radius: 6px;
-      font-size: clamp(11px, 1.4vh, 13px);
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .team-blue .btn-ippon-sub {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: rgba(255, 255, 255, 0.25);
-    }
-
-    /* PUNTOS TÉCNICOS W - Y - K */
+    /* 4 COLUMNAS DE PUNTUACIÓN VERTICALES (IPPON | WASARI | YUKO | KOKA) */
     .tech-scores-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 4px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(4px, 0.6vw, 6px);
       width: 100%;
       flex-shrink: 0;
     }
 
     .tech-card {
-      background: rgba(0, 0, 0, 0.05);
-      padding: clamp(2px, 0.4vh, 5px) 2px;
-      border-radius: 8px;
-      border: 1px solid rgba(0, 0, 0, 0.08);
+      background: rgba(0, 0, 0, 0.04);
+      padding: clamp(4px, 0.8vh, 8px) 3px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(0, 0, 0, 0.08);
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: clamp(2px, 0.4vh, 4px);
+      transition: all 0.2s ease;
     }
 
     .team-blue .tech-card {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.25);
       border-color: rgba(255, 255, 255, 0.15);
     }
 
-    .tech-card .label {
-      font-size: clamp(9px, 1.1vh, 11px);
-      font-weight: 900;
-      letter-spacing: 0.5px;
+    .tech-card.card-ippon {
+      border-color: rgba(245, 158, 11, 0.5);
+      background: rgba(245, 158, 11, 0.06);
     }
 
-    .team-white .tech-card .label { color: #475569; }
+    .team-blue .tech-card.card-ippon {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.6);
+    }
+
+    .tech-card .label {
+      font-size: clamp(9px, 1.2vh, 11px);
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .team-white .tech-card .label { color: #334155; }
     .team-blue .tech-card .label { color: #93c5fd; }
 
     .tech-card .value {
-      font-size: clamp(20px, 3.8vh, 34px);
+      font-size: clamp(26px, 4.5vh, 42px);
       font-weight: 900;
-      font-family: 'Arial Black', monospace;
+      font-family: 'Arial Black', Impact, monospace;
       line-height: 1;
-      margin: 0;
+      margin: 1px 0;
     }
 
-    .team-white .tech-card .value { color: #0f172a; }
-    .team-blue .tech-card .value { color: #ffffff; }
+    .team-white .tech-card .value { color: #090d16; }
+    .team-blue .tech-card .value { color: #ffffff; text-shadow: 0 0 16px rgba(56, 189, 248, 0.6); }
 
     .tech-btn-group {
       display: flex;
       justify-content: center;
       gap: 3px;
+      width: 100%;
     }
 
     .tech-btn-group button {
       flex: 1;
-      height: clamp(18px, 2.4vh, 24px);
+      height: clamp(20px, 2.6vh, 26px);
       border-radius: 5px;
       border: 1px solid rgba(0, 0, 0, 0.2);
-      font-size: clamp(11px, 1.4vh, 13px);
+      font-size: clamp(11px, 1.4vh, 14px);
       font-weight: 900;
       cursor: pointer;
-      background: rgba(0,0,0,0.08);
+      background: rgba(0, 0, 0, 0.08);
       color: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
     }
 
     .team-blue .tech-btn-group button {
-      background: rgba(255,255,255,0.18);
-      border-color: rgba(255,255,255,0.25);
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.25);
+      color: #fff;
+    }
+
+    .tech-btn-group button:hover {
+      transform: translateY(-1px);
+      background: rgba(0, 0, 0, 0.18);
+    }
+    .team-blue .tech-btn-group button:hover {
+      background: rgba(255, 255, 255, 0.3);
     }
 
     .tech-btn-group button:hover {
