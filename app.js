@@ -2157,7 +2157,7 @@ const DEMO_50_JUDOKAS = [
       loadMatchByIndex(nextIndex, true);
     }
 
-    function loadNextOfficialPair() {
+    function loadNextOfficialPair(autoAnnounce = true) {
       const pairs = getOfficialMatchPairs();
       if (pairs.length === 0) {
         alert('No hay combates programados en el orden de combate del torneo.');
@@ -2191,9 +2191,16 @@ const DEMO_50_JUDOKAS = [
         loadMatchByIndex(nextPendingIndex, true);
         const nextFight = pairs[nextPendingIndex];
         showToast(`⚔️ Combate #${nextFight.matchNumber} en mesa: ${nextFight.white.name} vs ${nextFight.blue.name}`, '#10b981');
+        
+        if (autoAnnounce) {
+          setTimeout(() => {
+            announceCurrentMatchVoiceAloud();
+          }, 350);
+        }
       } else {
         // Todos los combates del orden de combate han sido completados
         showToast('🎉 ¡Todos los combates del orden de combate han sido completados!', '#10b981');
+        speakAnnouncement('¡Atención a todos los participantes! Todos los combates oficiales del torneo han finalizado con éxito. Damos paso a la ceremonia oficial de clausura.', 1.0, 1.0);
         openTournamentFinishedOverlay();
       }
     }
@@ -2426,7 +2433,7 @@ const DEMO_50_JUDOKAS = [
 
     let activeSpeechUtterance = null;
 
-    function speakAnnouncement(text, rate = 1.0, pitch = 1.0) {
+    function speakAnnouncement(text, rate = 0.96, pitch = 1.0) {
       if (!isVoiceAnnouncerEnabled || !('speechSynthesis' in window)) return;
 
       try {
@@ -2435,12 +2442,32 @@ const DEMO_50_JUDOKAS = [
         const phoneticText = formatSpeechPhonetics(text);
         activeSpeechUtterance = new SpeechSynthesisUtterance(phoneticText);
         activeSpeechUtterance.lang = 'es-ES';
-        if (preferredSpanishVoice) activeSpeechUtterance.voice = preferredSpanishVoice;
-        activeSpeechUtterance.rate = rate; // Velocidad de locución
-        activeSpeechUtterance.pitch = pitch; // Tono
-        activeSpeechUtterance.volume = 1.0;
+
+        if (!preferredSpanishVoice) {
+          const voices = window.speechSynthesis.getVoices();
+          const esVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('es'));
+          preferredSpanishVoice = esVoices.find(v => (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Online')) && (v.lang.includes('MX') || v.lang.includes('CO') || v.lang.includes('ES'))) ||
+                                  esVoices.find(v => v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Online')) ||
+                                  esVoices.find(v => v.name.includes('Paulina') || v.name.includes('Sabina') || v.name.includes('Jorge') || v.name.includes('Helena')) ||
+                                  esVoices[0] ||
+                                  voices[0];
+        }
+
+        if (preferredSpanishVoice) {
+          activeSpeechUtterance.voice = preferredSpanishVoice;
+          if (preferredSpanishVoice.lang) activeSpeechUtterance.lang = preferredSpanishVoice.lang;
+        }
+
+        activeSpeechUtterance.rate = rate; // Velocidad clara y comprensible
+        activeSpeechUtterance.pitch = pitch; // Tono oficial
+        activeSpeechUtterance.volume = 1.0; // Volumen máximo por altavoz
         activeSpeechUtterance.onend = () => { activeSpeechUtterance = null; };
         activeSpeechUtterance.onerror = () => { activeSpeechUtterance = null; };
+
+        // Asegurar que speech synthesis esté activo en navegadores
+        if (window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        }
 
         window.speechSynthesis.speak(activeSpeechUtterance);
       } catch (err) {
@@ -2448,16 +2475,41 @@ const DEMO_50_JUDOKAS = [
       }
     }
 
+    function announceCurrentMatchVoiceAloud() {
+      const whiteNameEl = document.getElementById('white-name-input');
+      const whiteDojoEl = document.getElementById('white-dojo-text');
+      const blueNameEl = document.getElementById('blue-name-input');
+      const blueDojoEl = document.getElementById('blue-dojo-text');
+      
+      const selectCat = document.getElementById('match-category-selector');
+      const catText = selectCat ? selectCat.options[selectCat.selectedIndex]?.text?.split('—')[0]?.trim() || selectCat.options[selectCat.selectedIndex]?.text || 'Categoría Oficial' : 'Categoría Oficial';
+
+      const wName = (whiteNameEl && whiteNameEl.value) ? whiteNameEl.value : 'Judoka Blanco';
+      const wDojo = (whiteDojoEl && whiteDojoEl.innerText && whiteDojoEl.innerText !== 'Dojo Shiro') ? whiteDojoEl.innerText : '';
+      const bName = (blueNameEl && blueNameEl.value) ? blueNameEl.value : 'Judoka Azul';
+      const bDojo = (blueDojoEl && blueDojoEl.innerText && blueDojoEl.innerText !== 'Dojo Ao') ? blueDojoEl.innerText : '';
+
+      const matchNumText = state.currentScheduledMatchNumber ? `número ${state.currentScheduledMatchNumber}` : '';
+      const roundText = state.currentRound ? `Ronda ${state.currentRound}.` : '';
+
+      playSound('bell');
+
+      const voiceText = `¡Atención tatami! Siguiente combate oficial ${matchNumText}. ${roundText} Categoría ${catText}. Al centro con uniforme blanco: ${wName}${wDojo ? ', del dojo ' + wDojo : ''}. Con uniforme azul: ${bName}${bDojo ? ', del dojo ' + bDojo : ''}. ¡A presentarse al tatami!`;
+
+      speakAnnouncement(voiceText, 0.96, 1.0);
+      showToast(`📢 Llamando a competidores: ⚪ ${wName} vs 🔵 ${bName}`, '#2563eb');
+    }
+
     function repeatCurrentPhaseVoice() {
       if (matchCallState.currentPhase === 'white') {
         const text = `Al centro, con uniforme blanco: ${matchCallState.white.name}${matchCallState.white.dojo ? ', del club ' + matchCallState.white.dojo : ''}.`;
-        speakAnnouncement(text, 1.0, 1.05);
+        speakAnnouncement(text, 0.96, 1.05);
       } else if (matchCallState.currentPhase === 'blue') {
         const text = `Con uniforme azul: ${matchCallState.blue.name}${matchCallState.blue.dojo ? ', del club ' + matchCallState.blue.dojo : ''}.`;
-        speakAnnouncement(text, 1.0, 0.98);
+        speakAnnouncement(text, 0.96, 0.98);
       } else if (matchCallState.currentPhase === 'versus') {
         const text = `Al centro del tatami. Con uniforme blanco: ${matchCallState.white.name}. Con uniforme azul: ${matchCallState.blue.name}.`;
-        speakAnnouncement(text, 1.02, 1.0);
+        speakAnnouncement(text, 0.98, 1.0);
       }
     }
 
@@ -2488,10 +2540,10 @@ const DEMO_50_JUDOKAS = [
           time: blueJudoka.timeFormatted || matchData.timeFormatted || '2:00 min'
         },
         matchNumber: matchData.matchNumber || state.currentScheduledMatchNumber || 1,
-        categoryLabel: matchData.categoryLabel || matchCallState.white.category || 'General',
+        categoryLabel: matchData.categoryLabel || whiteJudoka.category || 'General',
         roundTitle: matchData.roundTitle || `Ronda ${matchData.round || 1}`,
         poolName: matchData.poolName || 'Llave Oficial',
-        timeFormatted: matchData.timeFormatted || matchCallState.white.time || '2:00 min',
+        timeFormatted: matchData.timeFormatted || whiteJudoka.timeFormatted || '2:00 min',
         currentPhase: 'white'
       };
 
@@ -4607,6 +4659,10 @@ const DEMO_50_JUDOKAS = [
         toggleMatchTimer();
       } else if (key === 'c') {
         openMatchCallOverlayCurrent();
+      } else if (key === 'n') {
+        loadNextOfficialPair(true);
+      } else if (key === 'v') {
+        announceCurrentMatchVoiceAloud();
       } else if (key === 'a') {
         startOsaekomi('white');
       } else if (key === 's') {

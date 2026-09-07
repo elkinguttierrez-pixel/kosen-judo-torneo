@@ -92,8 +92,17 @@
       </div>
 
       <div class="match-banner-actions">
-        <button class="btn-action" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color:#000; font-weight:900; box-shadow:0 0 14px rgba(245,158,11,0.5); font-size:13px; padding:6px 14px; border:none; display:inline-flex; align-items:center; gap:6px;" onclick="openMatchCallOverlayCurrent()" title="Llamar a los competidores al tatami (Blanco y Azul)">
+        <button class="btn-action" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color:#000; font-weight:900; box-shadow:0 0 14px rgba(245,158,11,0.5); font-size:13px; padding:6px 14px; border:none; display:inline-flex; align-items:center; gap:6px;" onclick="openMatchCallOverlayCurrent()" title="Llamar a los competidores al tatami con pantalla completa (Tecla C)">
           📢 Llamar a Tatami (C)
+        </button>
+        <button class="btn-action" style="background:linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color:#fff; font-weight:900; box-shadow:0 0 14px rgba(37,99,235,0.5); font-size:13px; padding:6px 14px; border:none; display:inline-flex; align-items:center; gap:6px;" onclick="loadNextOfficialPair(true)" title="Cargar y llamar en voz alta al siguiente combate oficial (Tecla N)">
+          ⚡ Siguiente Combate ▶ (N)
+        </button>
+        <button class="btn-action" style="background:rgba(255, 255, 255, 0.08); color:var(--slate-300); font-weight:700; font-size:12px; padding:6px 10px; border:1px solid rgba(255,255,255,0.18);" onclick="navigateTournamentMatch(-1)" title="Combate anterior">
+          ◀
+        </button>
+        <button class="btn-action" style="background:rgba(255, 255, 255, 0.08); color:var(--slate-300); font-weight:700; font-size:12px; padding:6px 10px; border:1px solid rgba(255,255,255,0.18);" onclick="navigateTournamentMatch(1)" title="Combate siguiente">
+          ▶
         </button>
         <select id="select-tournament-match" style="display:none;" onchange="onTournamentMatchSelect(this.value)">
         </select>
