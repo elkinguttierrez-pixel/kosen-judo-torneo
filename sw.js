@@ -1,5 +1,5 @@
 // Service Worker para KOSEN JUDO HEIKEGANI - Portal de Postulación PWA
-const CACHE_NAME = 'kosen-postulacion-v3';
+const CACHE_NAME = 'kosen-postulacion-v4.2';
 const STATIC_ASSETS = [
   './postulacion.html',
   './manifest.json',

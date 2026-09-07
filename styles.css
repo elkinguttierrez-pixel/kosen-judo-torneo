@@ -208,9 +208,9 @@
 
     /* VISTA 1: SCOREBOARD (MARCADOR Y TIEMPO MONUMENTAL) */
     #view-scoreboard {
-      padding: 6px 10px;
-      height: 100%;
-      max-height: 100%;
+      padding: clamp(3px, 0.6vh, 6px) clamp(6px, 0.8vw, 10px);
+      height: 100vh;
+      max-height: 100vh;
       box-sizing: border-box;
       overflow: hidden;
     }
@@ -226,7 +226,7 @@
       grid-template-columns: 1fr minmax(280px, 340px) 1fr;
       flex: 1;
       min-height: 0;
-      gap: 8px;
+      gap: 6px;
       padding: 0;
       background: #060911;
       align-items: stretch;
@@ -236,18 +236,18 @@
     @media (max-width: 1100px) {
       .scoreboard-layout {
         grid-template-columns: 1fr;
-        gap: 10px;
+        gap: 8px;
         overflow-y: auto;
       }
     }
 
     .team-panel {
-      padding: clamp(6px, 1.2vh, 10px) clamp(8px, 1.2vw, 12px);
+      padding: clamp(4px, 0.8vh, 8px) clamp(6px, 0.8vw, 10px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      gap: clamp(3px, 0.6vh, 6px);
+      gap: clamp(2px, 0.4vh, 4px);
       position: relative;
       border-radius: 14px;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
@@ -862,12 +862,12 @@
     .center-control-panel {
       position: relative;
       background: #0f172a;
-      padding: clamp(6px, 1.2vh, 10px) clamp(8px, 1.2vw, 12px);
+      padding: clamp(4px, 0.8vh, 8px) clamp(6px, 0.8vw, 10px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      gap: clamp(3px, 0.6vh, 6px);
+      gap: clamp(2px, 0.4vh, 4px);
       border-radius: 14px;
       border: 2px solid var(--panel-border);
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
