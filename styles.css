@@ -911,6 +911,55 @@
       text-align: center;
     }
 
+    .scoreboard-brand-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      background: linear-gradient(135deg, rgba(10, 15, 29, 0.95) 0%, rgba(26, 36, 56, 0.9) 100%);
+      border: 2px solid rgba(245, 158, 11, 0.5);
+      border-radius: 14px;
+      padding: 8px 16px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6), inset 0 0 12px rgba(245, 158, 11, 0.15);
+      user-select: none;
+    }
+
+    .scoreboard-brand-img {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      border: 2px solid var(--gold);
+      object-fit: contain;
+      background: #080c14;
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.5);
+      flex-shrink: 0;
+    }
+
+    .scoreboard-brand-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      line-height: 1.15;
+    }
+
+    .scoreboard-brand-title {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #ffffff;
+      text-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
+      font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+    }
+
+    .scoreboard-brand-subtitle {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+
     /* DISPLAY DE CRONÓMETRO GIGANTE */
     .match-clock-container {
       width: 100%;

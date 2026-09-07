@@ -192,8 +192,8 @@
       <!-- PANEL CENTRAL (CRONÓMETRO MONUMENTAL & CONTROL DE COMBATE) -->
       <section class="center-control-panel">
         
-        <!-- SELECTOR RÁPIDO DE TIEMPO / CATEGORÍA -->
-        <select id="match-category-selector" class="category-select-custom" onchange="onCategorySelectorChange()">
+        <!-- SELECTOR DE CATEGORÍA (Oculto para preservar lógica interna) -->
+        <select id="match-category-selector" class="category-select-custom" onchange="onCategorySelectorChange()" style="display:none;">
           <option value="60">Sub-10 (Hasta 10 años) — 1:00 min</option>
           <option value="90">Sub-13 (11 a 13 años) — 1:30 min</option>
           <option value="120" selected>Cadete (14 a 16 años) — 2:00 min</option>
@@ -202,6 +202,15 @@
           <option value="150">Máster A (31 a 49 años) — 2:30 min</option>
           <option value="120">Máster B (+50 años) — 2:00 min</option>
         </select>
+
+        <!-- LOGO CLUB HEIKEGANI Y LETRERO KOSEN JUDO -->
+        <div class="scoreboard-brand-header">
+          <img src="heikegani.jpg" alt="Logo Club Heikegani" class="scoreboard-brand-img">
+          <div class="scoreboard-brand-info">
+            <span class="scoreboard-brand-title">KOSEN JUDO</span>
+            <span class="scoreboard-brand-subtitle">CLUB HEIKEGANI</span>
+          </div>
+        </div>
 
         <!-- CRONÓMETRO GIGANTE -->
         <div class="match-clock-container">
