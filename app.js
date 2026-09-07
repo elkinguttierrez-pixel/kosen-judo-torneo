@@ -502,6 +502,16 @@ const DEMO_50_JUDOKAS = [
       const targetView = document.getElementById(`view-${tabId}`);
       if (targetView) targetView.classList.add('active');
 
+      // Ocultar completamente el encabezado global y pie en el Tablero Electrónico
+      const mainHeader = document.getElementById('main-app-header') || document.querySelector('header');
+      const mainFooter = document.getElementById('main-app-footer') || document.querySelector('footer');
+      if (mainHeader) {
+        mainHeader.style.display = (tabId === 'scoreboard') ? 'none' : 'flex';
+      }
+      if (mainFooter) {
+        mainFooter.style.display = (tabId === 'scoreboard') ? 'none' : 'flex';
+      }
+
       if (tabId === 'dojos') loadMesaDojosList();
       if (tabId === 'order') renderTournamentOrderView();
       if (tabId === 'pools') renderCategoryPoolsView();

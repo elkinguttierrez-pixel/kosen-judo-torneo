@@ -201,13 +201,18 @@
     }
 
     /* VISTA 1: SCOREBOARD (MARCADOR Y TIEMPO MONUMENTAL) */
+    #view-scoreboard {
+      padding: 10px 14px;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
     .scoreboard-layout {
       display: grid;
       grid-template-columns: 1fr 390px 1fr;
       flex: 1;
       gap: 16px;
-      padding: 12px 18px;
-      min-height: calc(100vh - 65px);
+      padding: 4px 6px;
       background: #060911;
       align-items: stretch;
     }

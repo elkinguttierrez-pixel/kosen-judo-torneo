@@ -6,12 +6,12 @@
   <title>KOSEN JUDO HEIKEGANI | Mesa Técnica & Torneo Oficial</title>
   <link rel="icon" type="image/jpeg" href="heikegani.jpg">
   <script src="qrcode.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=3.0">
+  <link rel="stylesheet" href="styles.css?v=3.5">
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header>
+  <!-- HEADER (Oculto en vista de Tablero Electrónico) -->
+  <header id="main-app-header" style="display: none;">
     <div class="brand" onclick="openTournamentKickoffOverlay()" style="cursor:pointer;" title="Ver Pantalla Oficial de Inicio">
       <img src="heikegani.jpg" alt="Heikegani Samurai Crest" class="brand-logo-img" title="Kosen Judo Heikegani">
       <div>
@@ -1333,7 +1333,7 @@ Dojo: Bushido
     </div>
   </div>
 
-  <footer>
+  <footer id="main-app-footer" style="display: none;">
     <div class="status-pill">
       <span class="status-dot"></span>
       <span>Sistema de Mesa Técnica Activo</span>
@@ -1342,6 +1342,6 @@ Dojo: Bushido
   </footer>
 
   <!-- JAVASCRIPT -->
-  <script src="app.js?v=3.0"></script>
+  <script src="app.js?v=3.5"></script>
 </body>
 </html>
