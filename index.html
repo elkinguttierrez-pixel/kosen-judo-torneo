@@ -177,19 +177,9 @@
           <span class="shido-badge" id="white-shido-3" onclick="toggleShido('white', 3)">3</span>
           <span class="shido-badge hansoku" id="white-shido-h" onclick="toggleHansoku('white')" title="Hansoku-Make">H</span>
         </div>
-
-        <!-- OSAEKOMI -->
-        <div class="osaekomi-panel" id="white-osaekomi-panel">
-          <div class="osaekomi-title">OSAEKOMI BLANCO</div>
-          <div class="osaekomi-timer-number" id="white-osaekomi-val">00s</div>
-          <div class="osaekomi-buttons">
-            <button class="btn-osaekomi-start" onclick="startOsaekomi('white')">OSAEKOMI (A)</button>
-            <button class="btn-osaekomi-stop" onclick="stopOsaekomi('white')">TOKETA (S)</button>
-          </div>
-        </div>
       </section>
 
-      <!-- PANEL CENTRAL (CRONÓMETRO MONUMENTAL & CONTROL DE COMBATE) -->
+      <!-- PANEL CENTRAL (LOS DOS ÚNICOS TIEMPOS: COMBATE Y OSAEKOMI) -->
       <section class="center-control-panel">
         
         <!-- SELECTOR DE CATEGORÍA (Oculto para preservar lógica interna) -->
@@ -212,10 +202,31 @@
           </div>
         </div>
 
-        <!-- CRONÓMETRO GIGANTE -->
+        <!-- 1. TIEMPO DE COMBATE (CRONÓMETRO MONUMENTAL) -->
         <div class="match-clock-container">
+          <div class="clock-label-tag">⏱️ TIEMPO DE COMBATE</div>
           <div class="match-clock-digital" id="main-timer-display">02:00</div>
           <div class="goldenscore-indicator" id="golden-score-badge">⚡ GOLDEN SCORE ⚡</div>
+        </div>
+
+        <!-- 2. TIEMPO DE OSAEKOMI (CAMBIA DE COLOR SEGÚN JUDOKA QUE LO REALIZA) -->
+        <div class="central-osaekomi-container" id="central-osaekomi-container">
+          <div class="central-osaekomi-header">
+            <span class="central-osaekomi-title" id="central-osaekomi-title">🥋 OSAEKOMI (INACTIVO)</span>
+            <span class="central-osaekomi-phase-badge" id="central-osaekomi-phase">TOKETA</span>
+          </div>
+          <div class="central-osaekomi-digital" id="central-osaekomi-display">00s</div>
+          <div class="central-osaekomi-controls">
+            <button class="btn-central-osaekomi btn-osaekomi-white" onclick="startOsaekomi('white')" title="Iniciar Osaekomi Blanco (Tecla A)">
+              ⚪ Blanco (A)
+            </button>
+            <button class="btn-central-osaekomi btn-osaekomi-toketa" onclick="stopOsaekomi(state.osaekomiSide || 'white')" title="Toketa / Detener Osaekomi (Tecla S / L)">
+              🛑 Toketa (S/L)
+            </button>
+            <button class="btn-central-osaekomi btn-osaekomi-blue" onclick="startOsaekomi('blue')" title="Iniciar Osaekomi Azul (Tecla K)">
+              🔵 Azul (K)
+            </button>
+          </div>
         </div>
 
         <!-- BOTONES DE OPERACIÓN DE COMBATE -->
@@ -228,13 +239,14 @@
             🏁 Finalizar / Decisión Arbitral
           </button>
 
-          <button class="btn-action" style="justify-content:center; background:#090d16; font-size:12px; padding:8px; border-color:var(--panel-border);" onclick="toggleGoldenScore()">
-            ⚡ Alternar Golden Score
-          </button>
-
-          <button class="btn-action" style="justify-content:center; background:#1e293b; color:#cbd5e1; font-size:11px; padding:6px;" onclick="resetMatch(false)" title="Reiniciar tiempo y puntos del combate actual">
-            🔄 Reiniciar Marcador (R)
-          </button>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:4px;">
+            <button class="btn-action" style="justify-content:center; background:#090d16; font-size:11px; padding:6px; border-color:var(--panel-border);" onclick="toggleGoldenScore()">
+              ⚡ Golden Score
+            </button>
+            <button class="btn-action" style="justify-content:center; background:#1e293b; color:#cbd5e1; font-size:11px; padding:6px;" onclick="resetMatch(false)" title="Reiniciar tiempo y puntos del combate actual">
+              🔄 Reset (R)
+            </button>
+          </div>
         </div>
 
       </section>
@@ -306,16 +318,6 @@
           <span class="shido-badge" id="blue-shido-2" onclick="toggleShido('blue', 2)">2</span>
           <span class="shido-badge" id="blue-shido-3" onclick="toggleShido('blue', 3)">3</span>
           <span class="shido-badge hansoku" id="blue-shido-h" onclick="toggleHansoku('blue')" title="Hansoku-Make">H</span>
-        </div>
-
-        <!-- OSAEKOMI -->
-        <div class="osaekomi-panel" id="blue-osaekomi-panel">
-          <div class="osaekomi-title">OSAEKOMI AZUL</div>
-          <div class="osaekomi-timer-number" id="blue-osaekomi-val">00s</div>
-          <div class="osaekomi-buttons">
-            <button class="btn-osaekomi-start" onclick="startOsaekomi('blue')">OSAEKOMI (K)</button>
-            <button class="btn-osaekomi-stop" onclick="stopOsaekomi('blue')">TOKETA (L)</button>
-          </div>
         </div>
       </section>
 

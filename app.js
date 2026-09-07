@@ -2989,7 +2989,13 @@ const DEMO_50_JUDOKAS = [
 
     function startOsaekomi(side) {
       getAudioContext();
-      if (state.osaekomiSide !== null) return;
+      if (!side) return;
+
+      // Si ya hay un Osaekomi activo del mismo lado, ignorar; si es del otro lado, detener el anterior primero
+      if (state.osaekomiSide !== null) {
+        if (state.osaekomiSide === side) return;
+        stopOsaekomi(state.osaekomiSide, false, true);
+      }
 
       state.osaekomiSide = side;
       state.osaekomiSeconds = 0;
@@ -3021,8 +3027,10 @@ const DEMO_50_JUDOKAS = [
       }, 500);
     }
 
-    function stopOsaekomi(side, isIppon = false, skipAutoFinish = false) {
-      if (state.osaekomiSide !== side) return;
+    function stopOsaekomi(side = null, isIppon = false, skipAutoFinish = false) {
+      const activeSide = side || state.osaekomiSide;
+      if (!activeSide || state.osaekomiSide !== activeSide) return;
+
       if (state.osaekomiInterval) {
         clearInterval(state.osaekomiInterval);
         state.osaekomiInterval = null;
@@ -3030,21 +3038,22 @@ const DEMO_50_JUDOKAS = [
       lastOsaekomiTickTime = null;
 
       const sec = state.osaekomiSeconds;
+      const finishedSide = state.osaekomiSide;
       state.osaekomiSide = null;
       state.osaekomiSeconds = 0;
-      updateOsaekomiDisplay(side);
+      updateOsaekomiDisplay(finishedSide);
 
-      const panel = document.getElementById(`${side}-osaekomi-panel`);
+      const panel = document.getElementById(`${finishedSide}-osaekomi-panel`);
       if (panel) panel.classList.remove('active');
 
       if (isIppon || sec >= 20) {
-        addIpponScore(side, 'Osaekomi 20s (Ippon)');
+        addIpponScore(finishedSide, 'Osaekomi 20s (Ippon)');
       } else if (sec >= 10 && sec < 20) {
-        changeScore(side, 'wazaari', 1);
+        changeScore(finishedSide, 'wazaari', 1);
       } else if (sec >= 5 && sec < 10) {
-        changeScore(side, 'yuko', 1);
+        changeScore(finishedSide, 'yuko', 1);
       } else if (sec > 0 && sec < 5) {
-        changeScore(side, 'koka', 1);
+        changeScore(finishedSide, 'koka', 1);
       }
       broadcastLiveMatchToServer(true);
 
@@ -3058,11 +3067,70 @@ const DEMO_50_JUDOKAS = [
       }
     }
 
-    function updateOsaekomiDisplay(side) {
-      const display = document.getElementById(`${side}-osaekomi-val`);
-      if (display) {
-        display.innerText = `${String(state.osaekomiSeconds).padStart(2, '0')}s`;
+    function updateOsaekomiDisplay(side = null) {
+      const sec = state.osaekomiSeconds;
+      const formattedSec = `${String(sec).padStart(2, '0')}s`;
+
+      // 1. Actualizar Display Monumental Central
+      const centralDisplay = document.getElementById('central-osaekomi-display');
+      const centralContainer = document.getElementById('central-osaekomi-container');
+      const centralTitle = document.getElementById('central-osaekomi-title');
+      const centralPhase = document.getElementById('central-osaekomi-phase');
+
+      if (centralDisplay) {
+        centralDisplay.innerText = formattedSec;
       }
+
+      if (centralContainer) {
+        centralContainer.classList.remove('active-white', 'active-blue');
+        if (state.osaekomiSide === 'white') {
+          centralContainer.classList.add('active-white');
+        } else if (state.osaekomiSide === 'blue') {
+          centralContainer.classList.add('active-blue');
+        }
+      }
+
+      if (centralTitle) {
+        if (state.osaekomiSide === 'white') {
+          const wName = document.getElementById('white-name-input')?.value || 'Judoka Blanco';
+          centralTitle.innerHTML = `⚪ OSAEKOMI BLANCO: <b>${escapeHtml(wName)}</b>`;
+        } else if (state.osaekomiSide === 'blue') {
+          const bName = document.getElementById('blue-name-input')?.value || 'Judoka Azul';
+          centralTitle.innerHTML = `🔵 OSAEKOMI AZUL: <b>${escapeHtml(bName)}</b>`;
+        } else {
+          centralTitle.innerText = `🥋 OSAEKOMI (INACTIVO)`;
+        }
+      }
+
+      if (centralPhase) {
+        if (state.osaekomiSide) {
+          if (sec >= 20) {
+            centralPhase.innerText = '🏆 IPPON (20s)!';
+            centralPhase.className = 'central-osaekomi-phase-badge phase-ippon';
+          } else if (sec >= 10) {
+            centralPhase.innerText = '⚡ WAZA-ARI (10-19s)';
+            centralPhase.className = 'central-osaekomi-phase-badge phase-wazaari';
+          } else if (sec >= 5) {
+            centralPhase.innerText = '🔹 YUKO (5-9s)';
+            centralPhase.className = 'central-osaekomi-phase-badge phase-yuko';
+          } else if (sec > 0) {
+            centralPhase.innerText = '🔸 KOKA (1-4s)';
+            centralPhase.className = 'central-osaekomi-phase-badge phase-koka';
+          } else {
+            centralPhase.innerText = '⏳ EN CURSO (0s)';
+            centralPhase.className = 'central-osaekomi-phase-badge';
+          }
+        } else {
+          centralPhase.innerText = 'TOKETA';
+          centralPhase.className = 'central-osaekomi-phase-badge';
+        }
+      }
+
+      // 2. Compatibilidad si existen displays secundarios
+      const whiteDisp = document.getElementById('white-osaekomi-val');
+      if (whiteDisp) whiteDisp.innerText = (state.osaekomiSide === 'white' ? formattedSec : '00s');
+      const blueDisp = document.getElementById('blue-osaekomi-val');
+      if (blueDisp) blueDisp.innerText = (state.osaekomiSide === 'blue' ? formattedSec : '00s');
     }
 
     function changeScore(side, type, delta) {
