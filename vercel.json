@@ -2,14 +2,30 @@
   "version": 2,
   "name": "kosen-judo-torneo",
   "builds": [
-    { "src": "index.html", "use": "@vercel/static" },
-    { "src": "postulacion.html", "use": "@vercel/static" },
-    { "src": "server.js", "use": "@vercel/node" }
+    { "src": "server.js", "use": "@vercel/node" },
+    { "src": "*.html", "use": "@vercel/static" },
+    { "src": "*.js", "use": "@vercel/static" },
+    { "src": "*.css", "use": "@vercel/static" },
+    { "src": "*.json", "use": "@vercel/static" },
+    { "src": "*.jpg", "use": "@vercel/static" },
+    { "src": "*.svg", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "/server.js" },
     { "src": "/postulacion", "dest": "/postulacion.html" },
-    { "src": "/postulacion.html", "dest": "/postulacion.html" },
+    { "src": "/crear_dojos", "dest": "/crear_dojos.html" },
+    { "src": "/crear-dojos", "dest": "/crear_dojos.html" },
     { "src": "/(.*)", "dest": "/$1" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
   ]
 }
