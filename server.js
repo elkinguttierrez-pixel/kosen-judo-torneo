@@ -372,24 +372,34 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // API: Listar Dojos creados con recuento de atletas
+  // API: Listar Dojos creados con recuento y lista de atletas
   if (pathname === '/api/dojos' && req.method === 'GET') {
     const dojos = readJsonFile(DOJOS_FILE, []);
     const postulaciones = readJsonFile(DB_FILE, []);
 
-    // Calcular conteo de atletas por dojo
+    // Calcular nómina y conteo de atletas por dojo
     const enrichedDojos = dojos.map(dojo => {
       const dojoPosts = postulaciones.filter(p => 
         (p.dojoId && p.dojoId === dojo.id) || 
         (p.dojo && p.dojo.trim().toLowerCase() === dojo.name.trim().toLowerCase())
       );
-      let judokasCount = 0;
+      let judokas = [];
+      const seen = new Set();
       dojoPosts.forEach(p => {
-        judokasCount += (p.judokas || []).length;
+        if (Array.isArray(p.judokas)) {
+          p.judokas.forEach(j => {
+            const key = (j.id || '') + '_' + (j.name || '').toLowerCase();
+            if (!seen.has(key)) {
+              seen.add(key);
+              judokas.push(j);
+            }
+          });
+        }
       });
       return {
         ...dojo,
-        judokasCount: Math.max(judokasCount, dojo.judokasCount || 0)
+        judokas: judokas,
+        judokasCount: judokas.length || dojo.judokasCount || 0
       };
     });
 
